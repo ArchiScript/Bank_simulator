@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BankSystem.Models
 {
-    interface IPerson
+    public interface IPerson
     {
        public string Name { get; set; }
        public string PassNumber { get; set; }

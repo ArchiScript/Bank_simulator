@@ -10,7 +10,8 @@ namespace BankSystem.Models
         public string Name { get; set; }
         public string PassNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public int Id { get; set; }
+        public ulong Id { get; set; }
+        
 
         public override bool Equals(object obj)
         {

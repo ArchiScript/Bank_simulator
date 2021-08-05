@@ -11,7 +11,7 @@ namespace BankSystem.Models
         public DateTime DateOfBirth { get; set; }
         public DateTime DateOfEmployment { get; set; }
         public string Position { get; set; }
-        public int Id { get; set; }
+        public ulong Id { get; set; }
 
 
         public override bool Equals(object obj)
