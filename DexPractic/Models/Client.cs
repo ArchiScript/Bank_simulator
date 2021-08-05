@@ -9,7 +9,8 @@ namespace BankSystem.Models
     {
         public string Name { get; set; }
         public string PassNumber { get; set; }
-
+        public DateTime DateOfBirth { get; set; }
+        public int Id { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -18,7 +19,8 @@ namespace BankSystem.Models
                 return false;
             }
             Client result = (Client)obj;
-            return result.Name == Name && result.PassNumber == PassNumber;
+            return result.Name == Name && result.PassNumber == PassNumber
+                && result.DateOfBirth == DateOfBirth && result.Id == Id;
         }
         public static bool operator ==(Client first, Client second)
         {
@@ -30,7 +32,8 @@ namespace BankSystem.Models
         }
         public override int GetHashCode()
         {
-            return Name.GetHashCode() + PassNumber.GetHashCode();
+            return Name.GetHashCode() + PassNumber.GetHashCode() 
+                +DateOfBirth.GetHashCode() + Id.GetHashCode();
         }
     }
 
