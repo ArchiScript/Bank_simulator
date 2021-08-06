@@ -43,27 +43,76 @@ namespace BankSystem.Services
 
 
 
+        
+
+
+        public static IPerson Find<T>(string passNumber) where T : IPerson
+        {
+
+            //var returnObj;
+            var findNameEmp =
+           from employee in employees
+           where employee.PassNumber == passNumber
+           select employee;
+            if (findNameEmp.Count() == 0)
+            {
+                var findNameCl =
+                    from client in clients
+                    where client.PassNumber == passNumber
+                    select client;
+                foreach (var item in findNameCl)
+                {
+                    return new Client
+                    {
+                        Name = item.Name,
+                        DateOfBirth = item.DateOfBirth,
+                        PassNumber = item.PassNumber,
+                        Id = item.Id
+                    };
+                }
+            }
+            else
+            {
+                foreach (var item in findNameEmp)
+                {
+                    
+                    return new Employee
+                    {
+                        Name = item.Name,
+                        DateOfBirth = item.DateOfBirth,
+                        PassNumber = item.PassNumber,
+                        Id = item.Id,
+                        DateOfEmployment = item.DateOfEmployment,
+                        Position = item.Position
+                    };
+                }
+            }
+            //return returnObj;
+
+        }
+
+
+
         public static Employee FindEmployee(string passNumber)
         {
             var emp = employees;
-            //Client resultClient;
-
-             return
-            (from employee in emp
-             where employee.PassNumber == passNumber
-             select new Employee
-             {
-                 Name = employee.Name,
-                 PassNumber = employee.PassNumber,
-                 DateOfBirth = employee.DateOfBirth,
-                 Id = employee.Id
-             }).FirstOrDefault();
+            
+            return
+           (from employee in emp
+            where employee.PassNumber == passNumber
+            select new Employee
+            {
+                Name = employee.Name,
+                PassNumber = employee.PassNumber,
+                DateOfBirth = employee.DateOfBirth,
+                Id = employee.Id
+            }).FirstOrDefault();
         }
-        public static Client FindClient (string passNumber)
+
+        public static Client FindClient(string passNumber)
         {
             var cl = clients;
-            //Client resultClient;
-
+            
             return
             (from client in cl
              where client.PassNumber == passNumber
@@ -77,14 +126,36 @@ namespace BankSystem.Services
         }
         public static IPerson Find<T>(T person) where T : IPerson
         {
-           
+
             if (person is Employee)
             {
-                 var pers = person as Employee;
+                var pers = person as Employee;
+                return
+               (from employee in employees
+                where employee.PassNumber == person.PassNumber
+                select new Employee
+                {
+                    Name = employee.Name,
+                    PassNumber = employee.PassNumber,
+                    DateOfBirth = employee.DateOfBirth,
+                    Id = employee.Id
+                }).FirstOrDefault();
             }
-            
-            
+            else
+            {
+                var pers1 = person as Client;
+                 return
+               (from client in clients
+                where client.PassNumber == person.PassNumber
+                select new Client
+                {
+                    Name = client.Name,
+                    PassNumber = client.PassNumber,
+                    DateOfBirth = client.DateOfBirth,
+                    Id = client.Id
+                }).FirstOrDefault();
 
+            }
 
         }
     }

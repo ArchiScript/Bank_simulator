@@ -23,7 +23,10 @@ namespace BankSystem
                 Console.WriteLine($"{item.Id}{item.Name}{item.PassNumber}{item.DateOfBirth}");
             }
             
-                Console.WriteLine(BankServices.Find(BankServices.clients[0]).DateOfBirth);
+                //Console.WriteLine(BankServices.Find(BankServices.clients[0]).DateOfBirth);
+
+            Console.WriteLine(BankServices.FindClient("I-ПР012345").Name);
+            Console.WriteLine(BankServices.Find<Client>("I-ПР012345"));
         }
        
         
