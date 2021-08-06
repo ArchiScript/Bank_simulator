@@ -4,11 +4,8 @@ using System.Text;
 
 namespace BankSystem.Models
 {
-     public class Employee:IPerson
+    public class Employee : Person
     {
-        public string Name { get; set; }
-        public string PassNumber { get; set; }
-        public DateTime DateOfBirth { get; set; }
         public DateTime DateOfEmployment { get; set; }
         public string Position { get; set; }
         public ulong Id { get; set; }
@@ -22,7 +19,7 @@ namespace BankSystem.Models
             }
             Employee result = (Employee)obj;
             return result.Name == Name && result.PassNumber == PassNumber &&
-                result.DateOfBirth ==DateOfBirth && result.DateOfEmployment == DateOfEmployment &&
+                result.DateOfBirth == DateOfBirth && result.DateOfEmployment == DateOfEmployment &&
                 result.Position == Position && result.Id == Id;
         }
         public static bool operator ==(Employee first, Employee second)

@@ -4,14 +4,10 @@ using System.Text;
 
 namespace BankSystem.Models
 {
-    public class Client : IPerson
+    public class Client : Person
 
     {
-        public string Name { get; set; }
-        public string PassNumber { get; set; }
-        public DateTime DateOfBirth { get; set; }
         public ulong Id { get; set; }
-        
 
         public override bool Equals(object obj)
         {

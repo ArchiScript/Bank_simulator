@@ -4,10 +4,10 @@ using System.Text;
 
 namespace BankSystem.Models
 {
-    public interface IPerson
+    public class Person:IPerson
     {
-       public string Name { get; set; }
-       public string PassNumber { get; set; }
+        public string Name { get; set; }
+        public string PassNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
         
     }
