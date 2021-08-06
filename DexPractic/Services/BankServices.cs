@@ -43,13 +43,13 @@ namespace BankSystem.Services
 
 
 
-        
 
 
-        public static IPerson Find<T>(string passNumber) where T : IPerson
+
+       /* public static IPerson Find<T>(string passNumber) where T : IPerson
         {
 
-            //var returnObj;
+            IPerson returnObj;
             var findNameEmp =
            from employee in employees
            where employee.PassNumber == passNumber
@@ -62,7 +62,8 @@ namespace BankSystem.Services
                     select client;
                 foreach (var item in findNameCl)
                 {
-                    return new Client
+                    
+                    returnObj =  new Client
                     {
                         Name = item.Name,
                         DateOfBirth = item.DateOfBirth,
@@ -76,7 +77,7 @@ namespace BankSystem.Services
                 foreach (var item in findNameEmp)
                 {
                     
-                    return new Employee
+                    returnObj = new Employee
                     {
                         Name = item.Name,
                         DateOfBirth = item.DateOfBirth,
@@ -87,16 +88,16 @@ namespace BankSystem.Services
                     };
                 }
             }
-            //return returnObj;
+            return returnObj;
 
-        }
+        }*/
 
 
 
         public static Employee FindEmployee(string passNumber)
         {
             var emp = employees;
-            
+
             return
            (from employee in emp
             where employee.PassNumber == passNumber
@@ -112,7 +113,7 @@ namespace BankSystem.Services
         public static Client FindClient(string passNumber)
         {
             var cl = clients;
-            
+
             return
             (from client in cl
              where client.PassNumber == passNumber
@@ -144,16 +145,16 @@ namespace BankSystem.Services
             else
             {
                 var pers1 = person as Client;
-                 return
-               (from client in clients
-                where client.PassNumber == person.PassNumber
-                select new Client
-                {
-                    Name = client.Name,
-                    PassNumber = client.PassNumber,
-                    DateOfBirth = client.DateOfBirth,
-                    Id = client.Id
-                }).FirstOrDefault();
+                return
+              (from client in clients
+               where client.PassNumber == person.PassNumber
+               select new Client
+               {
+                   Name = client.Name,
+                   PassNumber = client.PassNumber,
+                   DateOfBirth = client.DateOfBirth,
+                   Id = client.Id
+               }).FirstOrDefault();
 
             }
 

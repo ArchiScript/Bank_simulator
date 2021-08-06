@@ -5,13 +5,13 @@ using BankSystem.Models;
 
 namespace BankSystem.Services
 {
-    public class Exchange:IExchange
+    public class Exchange : IExchange
     {
 
         public decimal Calc { get; set; }
         public decimal ConvertCurrency<T>(decimal ammount, T convertFrom, T convertTo) where T: Currency
         {
-            Calc = 0;
+            //Calc = 0;
             if (convertFrom.Sign == "USD")
             {
                 Calc = ammount * convertTo.Rate;
