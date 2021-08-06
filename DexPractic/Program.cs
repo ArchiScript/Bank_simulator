@@ -17,11 +17,13 @@ namespace BankSystem
 
 
 
-            var testcl = Services.BankServices.clients;
+            var testcl = BankServices.clients;
             foreach (var item in testcl)
             {
                 Console.WriteLine($"{item.Id}{item.Name}{item.PassNumber}{item.DateOfBirth}");
             }
+            
+                Console.WriteLine(BankServices.Find(BankServices.clients[0]).DateOfBirth);
         }
        
         

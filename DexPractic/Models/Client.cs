@@ -8,7 +8,7 @@ namespace BankSystem.Models
 
     {
         public ulong Id { get; set; }
-        public List<Account> Accounts = new List<Account>();
+        //public List<Account> Accounts = new List<Account>();
 
         public override bool Equals(object obj)
         {
