@@ -7,11 +7,11 @@ namespace BankSystem.Services
 {
     public class BankServices
     {
-        public List<Client> clients = new List<Client>();
-        public List<Employee> employees = new List<Employee>();
+        public static List<Client> clients = new List<Client>();
+        public static List<Employee> employees = new List<Employee>();
 
 
-        public void Add<T>(T person) where T : Person
+        public static void Add<T>(T person) where T : Person
         {
             if (person is Client)
             {
@@ -38,6 +38,7 @@ namespace BankSystem.Services
                 });
             }
         }
+
     }
 
 }

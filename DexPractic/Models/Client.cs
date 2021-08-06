@@ -8,6 +8,7 @@ namespace BankSystem.Models
 
     {
         public ulong Id { get; set; }
+        public List<Account> Accounts = new List<Account>();
 
         public override bool Equals(object obj)
         {
@@ -29,8 +30,8 @@ namespace BankSystem.Models
         }
         public override int GetHashCode()
         {
-            return Name.GetHashCode() + PassNumber.GetHashCode() 
-                +DateOfBirth.GetHashCode() + Id.GetHashCode();
+            return Name.GetHashCode() + PassNumber.GetHashCode()
+                + DateOfBirth.GetHashCode() + Id.GetHashCode();
         }
     }
 

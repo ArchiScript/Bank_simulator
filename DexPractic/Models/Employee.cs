@@ -6,7 +6,7 @@ namespace BankSystem.Models
 {
     public class Employee : Person
     {
-        public DateTime DateOfEmployment { get; set; }
+        public string DateOfEmployment { get; set; }
         public string Position { get; set; }
         public ulong Id { get; set; }
 
