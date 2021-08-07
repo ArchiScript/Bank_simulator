@@ -23,7 +23,8 @@ namespace BankSystem.Services
                     Name = client.Name,
                     PassNumber = client.PassNumber,
                     DateOfBirth = client.DateOfBirth,
-                    Id = client.Id
+                    Id = client.Id,
+
                 });
             }
             else
@@ -42,14 +43,11 @@ namespace BankSystem.Services
         }
 
 
-
-
-
-
-       /* public static IPerson Find<T>(string passNumber) where T : IPerson
+        public static IPerson Find<T>(string passNumber) where T : IPerson
         {
-
-            IPerson returnObj;
+            List<Client> cl = new List<Client>();
+            List<Employee> emp = new List<Employee>();
+          
             var findNameEmp =
            from employee in employees
            where employee.PassNumber == passNumber
@@ -62,22 +60,22 @@ namespace BankSystem.Services
                     select client;
                 foreach (var item in findNameCl)
                 {
-                    
-                    returnObj =  new Client
+
+                    cl.Add(new Client
                     {
                         Name = item.Name,
                         DateOfBirth = item.DateOfBirth,
                         PassNumber = item.PassNumber,
                         Id = item.Id
-                    };
+                    });
+
                 }
             }
             else
             {
                 foreach (var item in findNameEmp)
                 {
-                    
-                    returnObj = new Employee
+                    emp.Add(new Employee
                     {
                         Name = item.Name,
                         DateOfBirth = item.DateOfBirth,
@@ -85,12 +83,13 @@ namespace BankSystem.Services
                         Id = item.Id,
                         DateOfEmployment = item.DateOfEmployment,
                         Position = item.Position
-                    };
+                    });
                 }
             }
-            return returnObj;
 
-        }*/
+            if (cl.Count != 0) { return cl[0]; } else { return emp[0]; }
+
+        }
 
 
 
