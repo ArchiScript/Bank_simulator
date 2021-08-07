@@ -47,7 +47,7 @@ namespace BankSystem.Services
         {
             List<Client> cl = new List<Client>();
             List<Employee> emp = new List<Employee>();
-          
+
             var findNameEmp =
            from employee in employees
            where employee.PassNumber == passNumber
@@ -60,7 +60,6 @@ namespace BankSystem.Services
                     select client;
                 foreach (var item in findNameCl)
                 {
-
                     cl.Add(new Client
                     {
                         Name = item.Name,
@@ -68,7 +67,6 @@ namespace BankSystem.Services
                         PassNumber = item.PassNumber,
                         Id = item.Id
                     });
-
                 }
             }
             else
@@ -86,11 +84,8 @@ namespace BankSystem.Services
                     });
                 }
             }
-
             if (cl.Count != 0) { return cl[0]; } else { return emp[0]; }
-
         }
-
 
 
         public static Employee FindEmployee(string passNumber)
@@ -124,12 +119,13 @@ namespace BankSystem.Services
                  Id = client.Id
              }).FirstOrDefault();
         }
+
         public static IPerson Find<T>(T person) where T : IPerson
         {
 
             if (person is Employee)
             {
-                var pers = person as Employee;
+                //var pers = person as Employee;
                 return
                (from employee in employees
                 where employee.PassNumber == person.PassNumber
@@ -143,7 +139,7 @@ namespace BankSystem.Services
             }
             else
             {
-                var pers1 = person as Client;
+                //var pers1 = person as Client;
                 return
               (from client in clients
                where client.PassNumber == person.PassNumber

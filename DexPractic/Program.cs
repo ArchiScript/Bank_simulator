@@ -52,15 +52,15 @@ namespace BankSystem
                 Console.WriteLine($" {item.Id} {item.Name} {item.PassNumber} {item.DateOfBirth}");
             }
 
-            //Console.WriteLine(BankServices.Find(BankServices.clients[0]).DateOfBirth);
+            Console.WriteLine(BankServices.Find(BankServices.clients[0]).DateOfBirth);
             //Console.WriteLine(BankServices.Find(BankServices.employees[0]).Name);
+            // Console.WriteLine(BankServices.FindClient("I-ПР012345").Name);
 
-
-           // Console.WriteLine(BankServices.FindClient("I-ПР012345").Name);
-           Console.WriteLine(BankServices.Find<Employee>("I-ПР777845").Name);
+            var findp = BankServices.Find<Employee>("I-ПР777845");
+           Console.WriteLine($"\n IPerson найден по номеру пасспорта: \n {findp.PassNumber} {findp.Name} {findp.DateOfBirth}" );
 
             var testExchange = new Exchange().ConvertCurrency<Currency>(833, new UAH() , new EUR());
-            Console.WriteLine(testExchange);
+            Console.WriteLine($" \n Сконвертировано: {testExchange}") ;
         }
 
 
