@@ -8,11 +8,13 @@ namespace BankSystem
     {
         static void Main(string[] args)
         {
-            Services.BankServices.Add(new Client { 
-                Name = "Василий Александрович Петров", 
-                PassNumber = "I-ПР012345", 
-                DateOfBirth = "25.05.1975" , 
-                Id = 0001});
+            BankServices.Add(new Client
+            {
+                Name = "Василий Александрович Петров",
+                PassNumber = "I-ПР012345",
+                DateOfBirth = "25.05.1975",
+                Id = 0001
+            });
 
 
 
@@ -22,13 +24,15 @@ namespace BankSystem
             {
                 Console.WriteLine($"{item.Id}{item.Name}{item.PassNumber}{item.DateOfBirth}");
             }
-            
-                //Console.WriteLine(BankServices.Find(BankServices.clients[0]).DateOfBirth);
+
+            //Console.WriteLine(BankServices.Find(BankServices.clients[0]).DateOfBirth);
 
             Console.WriteLine(BankServices.FindClient("I-ПР012345").Name);
-            Console.WriteLine(BankServices.Find<Client>("I-ПР012345"));
+            //Console.WriteLine(BankServices.Find<Client>("I-ПР012345"));
+
+            var testExchange = new Exchange().ConvertCurrency(833, new EUR() , new USD());
         }
-       
-        
+
+
     }
 }

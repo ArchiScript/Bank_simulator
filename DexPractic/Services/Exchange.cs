@@ -9,14 +9,14 @@ namespace BankSystem.Services
     {
 
         public decimal Calc { get; set; }
-        public decimal ConvertCurrency<T>(decimal ammount, T convertFrom, T convertTo) where T: Currency
+        public decimal ConvertCurrency<T>(decimal ammount, T convertFrom, T convertTo) where T : Currency
         {
-            //Calc = 0;
-            if (convertFrom.Sign == "USD")
+            Calc = 0;
+            if (convertFrom is USD)
             {
-                Calc = ammount * convertTo.Rate;
+                Calc = ammount * convertFrom.Rate;
             }
-            else if (convertFrom.Sign != "USD" && convertTo.Sign != "USD")
+            else if (!(convertFrom is USD) && !(convertTo is USD))
             {
                 Calc = ammount / convertFrom.Rate * convertTo.Rate;
             }
