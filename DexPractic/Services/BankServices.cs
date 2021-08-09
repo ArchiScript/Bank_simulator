@@ -13,9 +13,9 @@ namespace BankSystem.Services
         public static List<Employee> employees = new List<Employee>();
         public static Dictionary<Client, List<Account>> clientsAcc = new Dictionary<Client, List<Account>>();
 
-        public delegate void ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo );
+        public delegate decimal ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo );
 
-        public static void Add<T>(T person) where T : Person
+        public  void Add<T>(T person) where T : Person
         {
             if (person is Client)
             {
@@ -44,7 +44,7 @@ namespace BankSystem.Services
             }
         }
 
-        public static IPerson Find<T>(string passNumber) where T : IPerson
+        public  IPerson Find<T>(string passNumber) where T : IPerson
         {
             List<Client> cl = new List<Client>();
             List<Employee> emp = new List<Employee>();
@@ -88,7 +88,7 @@ namespace BankSystem.Services
             if (cl.Count != 0) { return cl[0]; } else { return emp[0]; }
         }
 
-        public static Employee FindEmployee(string passNumber)
+        public  Employee FindEmployee(string passNumber)
         {
             var emp = employees;
 
@@ -104,7 +104,7 @@ namespace BankSystem.Services
             }).FirstOrDefault();
         }
 
-        public static Client FindClient(string passNumber)
+        public  Client FindClient(string passNumber)
         {
             var cl = clients;
 
@@ -120,7 +120,7 @@ namespace BankSystem.Services
              }).FirstOrDefault();
         }
 
-        public static IPerson Find<T>(T person) where T : IPerson
+        public  IPerson Find<T>(T person) where T : IPerson
         {
 
             if (person is Employee)
@@ -155,9 +155,9 @@ namespace BankSystem.Services
 
         }
 
-        public static void MoneyTransfer(int Sum, Account accountFrom, Account accountTo, Delegate ExchangeDelegate) 
-        { 
-            
+        public  void MoneyTransfer(int sum, Account accountFrom, Account accountTo, ExchangeDelegate exchangeDelegate) 
+        {
+            decimal result = exchangeDelegate(sum, accountFrom.CurrencyType, accountTo.CurrencyType);
         }
 
 
