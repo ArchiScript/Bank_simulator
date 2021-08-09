@@ -13,7 +13,7 @@ namespace BankSystem.Services
         public static List<Employee> employees = new List<Employee>();
         public static Dictionary<Client, List<Account>> clientsAcc = new Dictionary<Client, List<Account>>();
 
-        public delegate void ExchangeDelegate();
+        public delegate void ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo );
 
         public static void Add<T>(T person) where T : Person
         {
