@@ -13,6 +13,8 @@ namespace BankSystem.Services
         public static List<Employee> employees = new List<Employee>();
         public static Dictionary<Client, List<Account>> clientsAcc = new Dictionary<Client, List<Account>>();
 
+        public delegate void ExchangeDelegate();
+
         public static void Add<T>(T person) where T : Person
         {
             if (person is Client)
@@ -153,10 +155,9 @@ namespace BankSystem.Services
 
         }
 
-        public static void MoneyTransfer(int Sum, Account accountFrom, Account accountTo, Delegate transferDelegate) 
+        public static void MoneyTransfer(int Sum, Account accountFrom, Account accountTo, Delegate ExchangeDelegate) 
         { 
-
-
+            
         }
 
 
