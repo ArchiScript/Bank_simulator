@@ -11,7 +11,7 @@ namespace BankSystem.Services
     {
         public static List<Client> clients = new List<Client>();
         public static List<Employee> employees = new List<Employee>();
-
+        public static Dictionary<Client, List<Account>> clientsAcc = new Dictionary<Client, List<Account>>();
 
         public static void Add<T>(T person) where T : Person
         {
@@ -41,7 +41,6 @@ namespace BankSystem.Services
                 });
             }
         }
-
 
         public static IPerson Find<T>(string passNumber) where T : IPerson
         {
@@ -86,7 +85,6 @@ namespace BankSystem.Services
             }
             if (cl.Count != 0) { return cl[0]; } else { return emp[0]; }
         }
-
 
         public static Employee FindEmployee(string passNumber)
         {
@@ -154,7 +152,18 @@ namespace BankSystem.Services
             }
 
         }
+
+        public static void MoneyTransfer(int Sum, Account accountFrom, Account accountTo, Delegate transferDelegate) 
+        { 
+
+
+        }
+
+
+
     }
+
+
 
 }
 
