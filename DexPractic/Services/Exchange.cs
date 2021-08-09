@@ -8,10 +8,9 @@ namespace BankSystem.Services
     public class Exchange : IExchange
     {
 
-        public decimal Calc { get; set; }
         public decimal ConvertCurrency<T>(decimal ammount, T convertFrom, T convertTo) where T : Currency
         {
-            Calc = 0;
+            decimal Calc = 0;
             if (convertFrom is USD)
             {
                 Calc = ammount * convertFrom.Rate;
