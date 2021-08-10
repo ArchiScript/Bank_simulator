@@ -89,7 +89,7 @@ namespace BankSystem
 
             var exc = new Exchange();
 
-            // Присваиваем переменной делегата адрес метода 
+            //Создаем переменную делегата и присваиваем ей адрес метода 
             var exchangeHandler = new BankServices.ExchangeDelegate(exc.ConvertCurrency);
 
             //Найти по номеру пасспорта и вернуть ключ-знач

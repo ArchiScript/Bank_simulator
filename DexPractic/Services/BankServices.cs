@@ -15,8 +15,9 @@ namespace BankSystem.Services
 
         //Определяем делегат
         public delegate decimal ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo);
-
-
+        
+        //Обобщенный делегат Func
+        public Func<decimal, Currency, Currency, decimal> ExchangeFunc;
         //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ
         public void Add<T>(T person) where T : Person
         {
@@ -142,18 +143,10 @@ namespace BankSystem.Services
             }
             else
             {
-                /*if (accountFrom.CurrencyType == accountTo.CurrencyType)
+
+                if (exchangeDelegate != null)
                 {
-                    accountFrom.Balance -= sum;
-                    accountTo.Balance += sum;
-                    Console.WriteLine($"Со счета {accountFrom.AccNumber} списано {sum} {accountFrom.CurrencyType.Sign} " +
-                        $"на счет {accountTo.AccNumber}\n на Вашем счете осталось " +
-                        $"{accountFrom.Balance} {accountFrom.CurrencyType.Sign}, " +
-                        $"\n на счете {accountTo.AccNumber} осталось {accountTo.Balance} {accountTo.CurrencyType.Sign}");
-                }
-                else
-                {*/
-                    
+
                     // Вызываем делегат путем передачи параметров (тоже что exchangeDelegate.Invoke( , , )
                     //и присваиваем переменной результат метода, подписанного на этот делегат, то есть ConvertCurrency
                     decimal result = exchangeDelegate(sum, accountFrom.CurrencyType, accountTo.CurrencyType);
@@ -164,10 +157,10 @@ namespace BankSystem.Services
                         $" на счет {accountTo.AccNumber} в валюте {accountTo.CurrencyType.Sign} пришло {result} {accountTo.CurrencyType.Sign}\n на Вашем счете осталось " +
                         $"{accountFrom.Balance} {accountFrom.CurrencyType.Sign} " +
                         $"\n на счете {accountTo.AccNumber} осталось {accountTo.Balance} {accountTo.CurrencyType.Sign}");
-                /*}*/
+
+                }
 
             }
-
         }
 
         //ВОЗВРАЩАЕТ СПИСОК СЧЕТОВ ЗАРАНЕЕ НАЙДЕННОГО КЛИЕНТА КЛИЕНТА
@@ -175,7 +168,7 @@ namespace BankSystem.Services
         {
             return keyValuePair.FirstOrDefault().Value;
         }
-       
+
 
         //ВОЗВРАЩАЕТ КЛИЕНТА ПО НОМЕРУ ПАССПОРТА ИЗ СЛОВАРЯ
         public Client GetClientFromDict(string passNumber)
