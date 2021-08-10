@@ -11,19 +11,7 @@ namespace BankSystem.Services
         public decimal ConvertCurrency<T>(decimal ammount, T convertFrom, T convertTo) where T : Currency
         {
             decimal Calc;
-            if (convertFrom is USD)
-            {
-                Calc = ammount * convertFrom.Rate;
-            }
-            else if (!(convertFrom is USD) && !(convertTo is USD))
-            {
-                Calc = ammount / convertFrom.Rate * convertTo.Rate;
-            }
-            else
-            {
-                Calc = ammount / convertFrom.Rate;
-            }
-
+            Calc = ammount / convertFrom.Rate * convertTo.Rate;
             return Math.Round(Calc, 2);
         }
     }

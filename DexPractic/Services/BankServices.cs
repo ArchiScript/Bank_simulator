@@ -142,7 +142,7 @@ namespace BankSystem.Services
             }
             else
             {
-                if (accountFrom.CurrencyType == accountTo.CurrencyType)
+                /*if (accountFrom.CurrencyType == accountTo.CurrencyType)
                 {
                     accountFrom.Balance -= sum;
                     accountTo.Balance += sum;
@@ -152,7 +152,7 @@ namespace BankSystem.Services
                         $"\n на счете {accountTo.AccNumber} осталось {accountTo.Balance} {accountTo.CurrencyType.Sign}");
                 }
                 else
-                {
+                {*/
                     
                     // Вызываем делегат путем передачи параметров (тоже что exchangeDelegate.Invoke( , , )
                     //и присваиваем переменной результат метода, подписанного на этот делегат, то есть ConvertCurrency
@@ -161,10 +161,10 @@ namespace BankSystem.Services
                     accountFrom.Balance -= sum;
                     accountTo.Balance += result;
                     Console.WriteLine($"Со счета {accountFrom.AccNumber} списано {sum} {accountFrom.CurrencyType.Sign}" +
-                        $" на счет {accountTo.AccNumber} в валюте {accountTo.CurrencyType.Sign} \n на Вашем счете осталось " +
+                        $" на счет {accountTo.AccNumber} в валюте {accountTo.CurrencyType.Sign} пришло {result} {accountTo.CurrencyType.Sign}\n на Вашем счете осталось " +
                         $"{accountFrom.Balance} {accountFrom.CurrencyType.Sign} " +
                         $"\n на счете {accountTo.AccNumber} осталось {accountTo.Balance} {accountTo.CurrencyType.Sign}");
-                }
+                /*}*/
 
             }
 
