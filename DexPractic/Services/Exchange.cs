@@ -10,7 +10,7 @@ namespace BankSystem.Services
 
         public decimal ConvertCurrency<T>(decimal ammount, T convertFrom, T convertTo) where T : Currency
         {
-            decimal Calc = 0;
+            decimal Calc;
             if (convertFrom is USD)
             {
                 Calc = ammount * convertFrom.Rate;

@@ -4,71 +4,97 @@ using BankSystem.Services;
 
 namespace BankSystem
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
-            /*BankServices.Add(new Client
-            {
-                Name = "Василий Александрович Петров",
-                PassNumber = "I-ПР012345",
-                DateOfBirth = "25.05.1975",
-                Id = 0001,
-                ClientAccount = 0230000000143456,
+            var bankServ = new BankServices();
+            var rand = new Random();
 
-            });
-            BankServices.Add(new Client
+            for (int i = 1; i <= 10; i++)
             {
-                Name = "Егор Борисович Брынза",
-                PassNumber = "I-ПР058845",
-                DateOfBirth = "01.02.1963",
-                Id = 0002,
-                ClientAccount = 0230000000178456,
+                bankServ.Add(new Client
+                {
+                    Name = $"Имя{i} Фамилия{i} Отчество{i}",
+                    PassNumber = $"I-ПР01234{i}",
+                    DateOfBirth = $"{rand.Next(1, 30)}.{rand.Next(1, 12)}.{rand.Next(1955, 2002)}",
+                    Id = i,
+                });
 
-            });
-            BankServices.Add(new Client
-            {
-                Name = "Алиса Макаровна Шашли",
-                PassNumber = "I-ПР753845",
-                DateOfBirth = "05.08.2001",
-                Id = 0003,
-                ClientAccount = 0230000000278456,
-
-            });
-
-            BankServices.Add(new Employee
-            {
-                Name = "Ульрих Панкратович Бюгельмайстер",
-                PassNumber = "I-ПР777845",
-                DateOfBirth = "12.02.1987",
-                Id = 0004,
-                DateOfEmployment = "24.01.2019",
-                Position = "Заместитель директора"
-            });
-
-            var testcl = BankServices.clients;
-            foreach (var item in testcl)
-            {
-                Console.WriteLine($" {item.Id} {item.Name} {item.PassNumber} {item.DateOfBirth}");
+                ulong uli = (ulong)i;
+                bankServ.AddAccount(new Client
+                {
+                    Name = $"Имя1{i} Фамилия1{i} Отчество1{i}",
+                    PassNumber = $"I-ПР01234{i}",
+                    DateOfBirth = $"{rand.Next(1, 30)}.{rand.Next(1, 12)}.{rand.Next(1955, 2002)}",
+                    Id = i,
+                }, new Account { AccNumber = 1000000 + uli, Balance = 4500 + i, CurrencyType = new USD() });
             }
 
-            //Console.WriteLine(BankServices.Find(BankServices.clients[0]).DateOfBirth);
-            //Console.WriteLine(BankServices.Find(BankServices.employees[0]).Name);
-            // Console.WriteLine(BankServices.FindClient("I-ПР012345").Name);
+            var testcl = BankServices.clients;
+            var testClDict = BankServices.clientsDict;
 
-            //var findp = BankServices.Find<Employee>("I-ПР777845");
-           Console.WriteLine($"\n IPerson найден по номеру пасспорта: \n {findp.PassNumber} {findp.Name} {findp.DateOfBirth}" );
+            //Console.WriteLine(bankServ.Find(BankServices.clients[0]));
 
-            var testExchange = new Exchange().ConvertCurrency<Currency>(833, new UAH() , new EUR());
-            Console.WriteLine($" \n Сконвертировано: {testExchange}") ;*/
+            var findp = bankServ.Find<Client>("I-ПР012343");
+            Console.WriteLine($"\n IPerson найден по номеру пасспорта: \n {findp.PassNumber} {findp.Name} {findp.DateOfBirth}");
 
-            var bc = new BankServices();
+            var testExchange = new Exchange().ConvertCurrency<Currency>(833, new UAH(), new EUR());
+            Console.WriteLine($" \n Сконвертировано: {testExchange}");
+
+            var testPair = bankServ.FindFromDict("I-ПР012343");
+            foreach (var pair in testPair)
+
+            {
+                foreach (var acc in pair.Value)
+                {
+                    Console.WriteLine($"Найдено из словаря {pair.Key.Name} {acc.AccNumber} {acc.Balance} {acc.CurrencyType.Sign}");
+                }
+
+            }
+
+            bankServ.AddAccount(BankServices.clients[0], new Account
+            {
+                AccNumber = 4524254,
+                Balance = 8555,
+                CurrencyType = new UAH()
+            });
+            bankServ.AddAccount(new Client
+            {
+                Name = "Василий Петрович Петров",
+                DateOfBirth = "12.05.1947",
+                Id = 888,
+                PassNumber = "I-ПР012883"
+            }, new Account
+            {
+                AccNumber = 4533354,
+                Balance = 6755,
+                CurrencyType = new RUB()
+            });
+            bankServ.AddAccount(BankServices.clients[0], new Account
+            {
+                AccNumber = 4577254,
+                Balance = 8595,
+                CurrencyType = new UAH()
+            });
+
+            foreach (var item in testClDict)
+            {
+                foreach (var ac in item.Value)
+                {
+                    Console.WriteLine($"{item.Key.Name} {item.Key.PassNumber} {ac.AccNumber} {ac.Balance} {ac.CurrencyType.Sign}");
+                }
+
+            }
+
             var exc = new Exchange();
-            
+
             var exchangeHandler = new BankServices.ExchangeDelegate(exc.ConvertCurrency);
-           // bc.MoneyTransfer();
+
+            //bankServ.MoneyTransfer();
+
         }
-        
+
 
     }
 }

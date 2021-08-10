@@ -8,7 +8,7 @@ namespace BankSystem.Models
     {
         public string DateOfEmployment { get; set; }
         public string Position { get; set; }
-        public ulong Id { get; set; }
+        public int Id { get; set; }
 
 
         public override bool Equals(object obj)

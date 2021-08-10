@@ -11,11 +11,11 @@ namespace BankSystem.Services
     {
         public static List<Client> clients = new List<Client>();
         public static List<Employee> employees = new List<Employee>();
-        public static Dictionary<Client, List<Account>> clientsAcc = new Dictionary<Client, List<Account>>();
+        public static Dictionary<Client, List<Account>> clientsDict = new Dictionary<Client, List<Account>>();
 
-        public delegate decimal ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo );
+        public delegate decimal ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo);
 
-        public  void Add<T>(T person) where T : Person
+        public void Add<T>(T person) where T : Person
         {
             if (person is Client)
             {
@@ -44,11 +44,44 @@ namespace BankSystem.Services
             }
         }
 
-        public  IPerson Find<T>(string passNumber) where T : IPerson
-        {
-            List<Client> cl = new List<Client>();
-            List<Employee> emp = new List<Employee>();
 
+        public void AddAccount(Client client, Account account)
+        {
+            if (clientsDict.Keys.Contains(client))
+            {
+                var accList = clientsDict[client];
+                accList.Add(account);
+            }
+            else
+            {
+                clientsDict.Add(client, new List<Account>());
+                var accNew = clientsDict[client];
+                accNew.Add(new Account { 
+                    AccNumber = account.AccNumber, 
+                    Balance = account.Balance, 
+                    CurrencyType = account.CurrencyType });
+            }
+        }
+
+
+
+
+        public Dictionary<Client,List<Account>> FindFromDict(string passNumber) 
+        {
+            var findNameCl =
+                     from client in clientsDict
+                     where client.Key.PassNumber == passNumber
+                     select client;
+            
+            Dictionary<Client, List<Account>> newDic = new Dictionary<Client, List<Account>>();
+            foreach (var pair in findNameCl)
+            {
+                newDic.Add(pair.Key,pair.Value);
+            }
+            return newDic;
+        }
+        public IPerson Find<T>(string passNumber) where T : IPerson
+        {
             var findNameEmp =
            from employee in employees
            where employee.PassNumber == passNumber
@@ -59,103 +92,38 @@ namespace BankSystem.Services
                     from client in clients
                     where client.PassNumber == passNumber
                     select client;
-                foreach (var item in findNameCl)
-                {
-                    cl.Add(new Client
-                    {
-                        Name = item.Name,
-                        DateOfBirth = item.DateOfBirth,
-                        PassNumber = item.PassNumber,
-                        Id = item.Id
-                    });
-                }
+                return findNameCl.FirstOrDefault();
             }
             else
             {
-                foreach (var item in findNameEmp)
-                {
-                    emp.Add(new Employee
-                    {
-                        Name = item.Name,
-                        DateOfBirth = item.DateOfBirth,
-                        PassNumber = item.PassNumber,
-                        Id = item.Id,
-                        DateOfEmployment = item.DateOfEmployment,
-                        Position = item.Position
-                    });
-                }
+                return findNameEmp.FirstOrDefault();
             }
-            if (cl.Count != 0) { return cl[0]; } else { return emp[0]; }
         }
 
-        public  Employee FindEmployee(string passNumber)
-        {
-            var emp = employees;
+        
 
-            return
-           (from employee in emp
-            where employee.PassNumber == passNumber
-            select new Employee
-            {
-                Name = employee.Name,
-                PassNumber = employee.PassNumber,
-                DateOfBirth = employee.DateOfBirth,
-                Id = employee.Id
-            }).FirstOrDefault();
-        }
-
-        public  Client FindClient(string passNumber)
-        {
-            var cl = clients;
-
-            return
-            (from client in cl
-             where client.PassNumber == passNumber
-             select new Client
-             {
-                 Name = client.Name,
-                 PassNumber = client.PassNumber,
-                 DateOfBirth = client.DateOfBirth,
-                 Id = client.Id
-             }).FirstOrDefault();
-        }
-
-        public  IPerson Find<T>(T person) where T : IPerson
+        public IPerson Find<T>(T person) where T : IPerson
         {
 
             if (person is Employee)
             {
-                //var pers = person as Employee;
-                return
-               (from employee in employees
-                where employee.PassNumber == person.PassNumber
-                select new Employee
-                {
-                    Name = employee.Name,
-                    PassNumber = employee.PassNumber,
-                    DateOfBirth = employee.DateOfBirth,
-                    Id = employee.Id
-                }).FirstOrDefault();
+                var findEmp =
+                    from employee in employees
+                    where employee.PassNumber == person.PassNumber
+                    select employee;
+                return findEmp.FirstOrDefault();
             }
             else
             {
-                //var pers1 = person as Client;
-                return
-              (from client in clients
-               where client.PassNumber == person.PassNumber
-               select new Client
-               {
-                   Name = client.Name,
-                   PassNumber = client.PassNumber,
-                   DateOfBirth = client.DateOfBirth,
-                   Id = client.Id
-               }).FirstOrDefault();
-
+                var findCl =
+                  from client in clients
+                  where client.PassNumber == person.PassNumber
+                  select client;
+                return findCl.FirstOrDefault();
             }
-
         }
 
-        public  void MoneyTransfer(int sum, Account accountFrom, Account accountTo, ExchangeDelegate exchangeDelegate) 
+        public void MoneyTransfer(int sum, Account accountFrom, Account accountTo, ExchangeDelegate exchangeDelegate)
         {
             decimal result = exchangeDelegate(sum, accountFrom.CurrencyType, accountTo.CurrencyType);
         }
