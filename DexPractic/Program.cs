@@ -11,7 +11,7 @@ namespace BankSystem
             var bankServ = new BankServices();
             var rand = new Random();
 
-            for (int i = 1; i <= 10; i++)
+            for (int i = 1; i <= 5; i++)
             {
                 bankServ.Add(new Client
                 {
@@ -22,7 +22,7 @@ namespace BankSystem
                 });
 
                 ulong uli = (ulong)i;
-                bankServ.AddAccount(new Client
+                bankServ.AddClientAccount(new Client
                 {
                     Name = $"Имя1{i} Фамилия1{i} Отчество1{i}",
                     PassNumber = $"I-ПР01234{i}",
@@ -34,15 +34,11 @@ namespace BankSystem
             var testcl = BankServices.clients;
             var testClDict = BankServices.clientsDict;
 
-            //Console.WriteLine(bankServ.Find(BankServices.clients[0]));
-
-            var findp = bankServ.Find<Client>("I-ПР012343");
-            Console.WriteLine($"\n IPerson найден по номеру пасспорта: \n {findp.PassNumber} {findp.Name} {findp.DateOfBirth}");
-
+            
             var testExchange = new Exchange().ConvertCurrency<Currency>(833, new UAH(), new EUR());
             Console.WriteLine($" \n Сконвертировано: {testExchange}");
 
-            var testPair = bankServ.FindFromDict("I-ПР012343");
+            var testPair = bankServ.FindFromDict("I-ПР012341");
             foreach (var pair in testPair)
 
             {
@@ -53,13 +49,13 @@ namespace BankSystem
 
             }
 
-            bankServ.AddAccount(BankServices.clients[0], new Account
+            bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
             {
                 AccNumber = 4524254,
                 Balance = 8555,
                 CurrencyType = new UAH()
             });
-            bankServ.AddAccount(new Client
+            bankServ.AddClientAccount(new Client
             {
                 Name = "Василий Петрович Петров",
                 DateOfBirth = "12.05.1947",
@@ -71,13 +67,16 @@ namespace BankSystem
                 Balance = 6755,
                 CurrencyType = new RUB()
             });
-            bankServ.AddAccount(BankServices.clients[0], new Account
+            bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
             {
                 AccNumber = 4577254,
                 Balance = 8595,
                 CurrencyType = new UAH()
             });
 
+            //---------------------------------------
+
+            
             foreach (var item in testClDict)
             {
                 foreach (var ac in item.Value)
@@ -87,11 +86,21 @@ namespace BankSystem
 
             }
 
+                        
             var exc = new Exchange();
 
+            // Присваиваем переменной делегата адрес метода 
             var exchangeHandler = new BankServices.ExchangeDelegate(exc.ConvertCurrency);
 
-            //bankServ.MoneyTransfer();
+            var tranferCl = bankServ.FindFromDict("I-ПР012341");
+            var accs = bankServ.GetAccountsFromPair(tranferCl);
+            if (accs.Count > 1)
+            {
+                Console.WriteLine($"{accs[0].AccNumber} {accs[0].Balance} {accs[1].AccNumber} {accs[1].Balance} \n ");
+                bankServ.MoneyTransfer(120, accs[0], accs[1], exchangeHandler);
+            }
+            else { Console.WriteLine($"{accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
+            
 
         }
 

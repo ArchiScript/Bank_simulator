@@ -13,8 +13,11 @@ namespace BankSystem.Services
         public static List<Employee> employees = new List<Employee>();
         public static Dictionary<Client, List<Account>> clientsDict = new Dictionary<Client, List<Account>>();
 
+        //Определяем делегат
         public delegate decimal ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo);
 
+
+        //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ
         public void Add<T>(T person) where T : Person
         {
             if (person is Client)
@@ -45,7 +48,8 @@ namespace BankSystem.Services
         }
 
 
-        public void AddAccount(Client client, Account account)
+        //ДОБАВЛЯЕТ НОВЫЙ СЧЕТ КЛИЕНТУ, ИЛИ НОВОГО КЛИЕНТА И СЧЕТ
+        public void AddClientAccount(Client client, Account account)
         {
             if (clientsDict.Keys.Contains(client))
             {
@@ -56,30 +60,34 @@ namespace BankSystem.Services
             {
                 clientsDict.Add(client, new List<Account>());
                 var accNew = clientsDict[client];
-                accNew.Add(new Account { 
-                    AccNumber = account.AccNumber, 
-                    Balance = account.Balance, 
-                    CurrencyType = account.CurrencyType });
+                accNew.Add(new Account
+                {
+                    AccNumber = account.AccNumber,
+                    Balance = account.Balance,
+                    CurrencyType = account.CurrencyType
+                });
             }
         }
 
 
-
-
-        public Dictionary<Client,List<Account>> FindFromDict(string passNumber) 
+        //ВОЗВРАЩАЕТ КЛЮЧ-ЗНАЧЕНИЕ С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА
+        public Dictionary<Client, List<Account>> FindFromDict(string passNumber)
         {
             var findNameCl =
                      from client in clientsDict
                      where client.Key.PassNumber == passNumber
                      select client;
-            
+
             Dictionary<Client, List<Account>> newDic = new Dictionary<Client, List<Account>>();
             foreach (var pair in findNameCl)
             {
-                newDic.Add(pair.Key,pair.Value);
+                newDic.Add(pair.Key, pair.Value);
             }
             return newDic;
         }
+
+
+        //ВОЗВРАЩАЕТ IPerson С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА
         public IPerson Find<T>(string passNumber) where T : IPerson
         {
             var findNameEmp =
@@ -100,8 +108,8 @@ namespace BankSystem.Services
             }
         }
 
-        
 
+        //ВОЗВРАЩАЕТ IPerson С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ ОБЪЕКТА
         public IPerson Find<T>(T person) where T : IPerson
         {
 
@@ -123,11 +131,62 @@ namespace BankSystem.Services
             }
         }
 
-        public void MoneyTransfer(int sum, Account accountFrom, Account accountTo, ExchangeDelegate exchangeDelegate)
+
+        //ПЕРЕВОДИТ СРЕДСТВА С ОДНОГО СЧЕТА КЛИЕНТА НА ДРУГОЙ С КОНВЕРТАЦИЕЙ
+        //Передаем в параметры метода экземпляр делегата 
+        public void MoneyTransfer(decimal sum, Account accountFrom, Account accountTo, ExchangeDelegate exchangeDelegate)
         {
-            decimal result = exchangeDelegate(sum, accountFrom.CurrencyType, accountTo.CurrencyType);
+            if (accountFrom.Balance < sum)
+            {
+                Console.WriteLine($"Недостаточно средств на счете {accountFrom}");
+            }
+            else
+            {
+                if (accountFrom.CurrencyType == accountTo.CurrencyType)
+                {
+                    accountFrom.Balance -= sum;
+                    accountTo.Balance += sum;
+                    Console.WriteLine($"Со счета {accountFrom.AccNumber} списано {sum} {accountFrom.CurrencyType.Sign} " +
+                        $"на счет {accountTo.AccNumber}\n на Вашем счете осталось " +
+                        $"{accountFrom.Balance} {accountFrom.CurrencyType.Sign}, " +
+                        $"\n на счете {accountTo.AccNumber} осталось {accountTo.Balance} {accountTo.CurrencyType.Sign}");
+                }
+                else
+                {
+                    
+                    // Вызываем делегат путем передачи параметров (тоже что exchangeDelegate.Invoke( , , )
+                    //и присваиваем переменной результат метода, подписанного на этот делегат, то есть ConvertCurrency
+                    decimal result = exchangeDelegate(sum, accountFrom.CurrencyType, accountTo.CurrencyType);
+
+                    accountFrom.Balance -= sum;
+                    accountTo.Balance += result;
+                    Console.WriteLine($"Со счета {accountFrom.AccNumber} списано {sum} {accountFrom.CurrencyType.Sign}" +
+                        $" на счет {accountTo.AccNumber} в валюте {accountTo.CurrencyType.Sign} \n на Вашем счете осталось " +
+                        $"{accountFrom.Balance} {accountFrom.CurrencyType.Sign} " +
+                        $"\n на счете {accountTo.AccNumber} осталось {accountTo.Balance} {accountTo.CurrencyType.Sign}");
+                }
+
+            }
+
         }
 
+        //ВОЗВРАЩАЕТ СПИСОК СЧЕТОВ ЗАРАНЕЕ НАЙДЕННОГО КЛИЕНТА КЛИЕНТА
+        public List<Account> GetAccountsFromPair(Dictionary<Client, List<Account>> keyValuePair)
+        {
+            return keyValuePair.FirstOrDefault().Value;
+        }
+       
+
+        //ВОЗВРАЩАЕТ КЛИЕНТА ПО НОМЕРУ ПАССПОРТА ИЗ СЛОВАРЯ
+        public Client GetClientFromDict(string passNumber)
+        {
+            var findNameCl =
+                     from client in clientsDict
+                     where client.Key.PassNumber == passNumber
+                     select client;
+
+            return findNameCl.FirstOrDefault().Key;
+        }
 
 
     }
