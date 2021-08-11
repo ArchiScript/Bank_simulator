@@ -1,6 +1,7 @@
 ﻿using System;
 using BankSystem.Models;
 using BankSystem.Services;
+using System.Collections.Generic;
 
 namespace BankSystem
 {
@@ -36,7 +37,8 @@ namespace BankSystem
             }
 
             var testClDict = BankServices.clientsDict;
-
+            
+            
             //Найти из словаря и показать
             var testPair = bankServ.FindFromDict("I-ПР012341");
             foreach (var pair in testPair)
@@ -91,11 +93,13 @@ namespace BankSystem
             Console.WriteLine("\n");
 
             var exc = new Exchange();
-            
-            
+
+            var funcExcDel = bankServ.funcExc;
+            funcExcDel = exc.ConvertCurrency;
+
             //Создаем переменную делегата и присваиваем ей адрес метода 
             var exchangeHandler = new BankServices.ExchangeDelegate(exc.ConvertCurrency);
-
+            
             //Найти по номеру пасспорта и вернуть ключ-знач
             var tranferCl = bankServ.FindFromDict("I-ПР012341");
             //Выбрать из ключ-значения список счетов

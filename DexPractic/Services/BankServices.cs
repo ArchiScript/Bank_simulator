@@ -18,9 +18,9 @@ namespace BankSystem.Services
 
 
         //??? Объявляем обобщенный делегат func
-        public Func<decimal, Currency, Currency, decimal> funcExc = (sum, cur, cur2) => sum / cur.Rate * cur2.Rate;
-
-
+        //public Func<decimal, Currency, Currency, decimal> funcExc = (sum, cur, cur2) => sum / cur.Rate * cur2.Rate;
+        public Func<decimal, Currency, Currency, decimal> funcExc;
+        
         //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ
         public void Add<T>(T person) where T : Person
         {
