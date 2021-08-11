@@ -15,9 +15,12 @@ namespace BankSystem.Services
 
         //Определяем делегат
         public delegate decimal ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo);
-        
-        //Обобщенный делегат Func
-        public Func<decimal, Currency, Currency, decimal> ExchangeFunc;
+
+
+        //??? Объявляем обобщенный делегат func
+        public  Func<decimal, Currency, Currency, decimal> funcExc = (sum, cur, cur2) => sum / cur.Rate * cur2.Rate;
+
+
         //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ
         public void Add<T>(T person) where T : Person
         {
@@ -150,6 +153,35 @@ namespace BankSystem.Services
                     // Вызываем делегат путем передачи параметров (тоже что exchangeDelegate.Invoke( , , )
                     //и присваиваем переменной результат метода, подписанного на этот делегат, то есть ConvertCurrency
                     decimal result = exchangeDelegate(sum, accountFrom.CurrencyType, accountTo.CurrencyType);
+
+                    accountFrom.Balance -= sum;
+                    accountTo.Balance += result;
+                    Console.WriteLine($"Со счета {accountFrom.AccNumber} списано {sum} {accountFrom.CurrencyType.Sign}" +
+                        $" на счет {accountTo.AccNumber} в валюте {accountTo.CurrencyType.Sign} пришло {result} {accountTo.CurrencyType.Sign}\n на Вашем счете осталось " +
+                        $"{accountFrom.Balance} {accountFrom.CurrencyType.Sign} " +
+                        $"\n на счете {accountTo.AccNumber} осталось {accountTo.Balance} {accountTo.CurrencyType.Sign}");
+
+                }
+
+            }
+        }
+
+
+        public void MoneyTransferFunc(decimal sum, Account accountFrom, Account accountTo)
+        {
+            
+            if (accountFrom.Balance < sum)
+            {
+                Console.WriteLine($"Недостаточно средств на счете {accountFrom}");
+            }
+            else
+            {
+                if (funcExc != null)
+                {
+
+                    // Вызываем делегат путем передачи параметров (тоже что exchangeDelegate.Invoke( , , )
+                    //и присваиваем переменной результат метода, подписанного на этот делегат, то есть ConvertCurrency
+                    decimal result = funcExc(sum, accountFrom.CurrencyType, accountTo.CurrencyType); ;
 
                     accountFrom.Balance -= sum;
                     accountTo.Balance += result;

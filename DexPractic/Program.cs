@@ -6,9 +6,12 @@ namespace BankSystem
 {
     public class Program
     {
+       
         static void Main(string[] args)
         {
-            var bankServ = new BankServices();
+                 
+
+        var bankServ = new BankServices();
 
             //Заполнение словаря
             for (int i = 1; i <= 5; i++)
@@ -88,7 +91,8 @@ namespace BankSystem
             Console.WriteLine("\n");
 
             var exc = new Exchange();
-
+            
+            
             //Создаем переменную делегата и присваиваем ей адрес метода 
             var exchangeHandler = new BankServices.ExchangeDelegate(exc.ConvertCurrency);
 
@@ -97,13 +101,27 @@ namespace BankSystem
             //Выбрать из ключ-значения список счетов
             var accs = bankServ.GetAccountsFromPair(tranferCl);
 
+            //Перевод со счета на счет, Exchange и Вывод 
             if (accs.Count > 1)
             {
-                Console.WriteLine($"Счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign}  " +
+                Console.WriteLine($" Счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign}  " +
                     $" Счет {accs[2].AccNumber} {accs[2].Balance} {accs[2].CurrencyType.Sign} \n ");
                 bankServ.MoneyTransfer(120, accs[0], accs[2], exchangeHandler);
+                Console.WriteLine("\n ");
             }
             else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
+
+
+            //Перевод со счета на счет,Exchange с помощью Func и Вывод 
+            if (accs.Count > 1)
+            {
+                Console.WriteLine($"Посредством обобщенного делегата Func: \n Счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign}  " +
+                    $" Счет {accs[2].AccNumber} {accs[2].Balance} {accs[2].CurrencyType.Sign} \n ");
+                bankServ.MoneyTransferFunc(120, accs[0], accs[2]);
+            }
+            else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
+
         }
+        
     }
 }

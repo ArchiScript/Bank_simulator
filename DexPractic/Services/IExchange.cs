@@ -7,10 +7,10 @@ namespace BankSystem.Services
 {
     public interface IExchange
     {
-        
+
         public decimal ConvertCurrency<T>(decimal ammount, T convertFrom, T convertTo) where T: Currency;
 
-
+       
     }
 }
 
