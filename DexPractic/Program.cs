@@ -126,7 +126,7 @@ namespace BankSystem
             else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
 
 
-            //Перевод со счета на счет,Exchange с помощью Func и Вывод 
+            //Перевод со счета на счет,Exchange с помощью Func и Вывод  
             if (accs.Count > 1)
             {
                 Console.WriteLine($"Посредством обобщенного делегата Func: \n Счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign}  " +
