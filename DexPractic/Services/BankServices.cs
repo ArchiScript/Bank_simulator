@@ -17,9 +17,9 @@ namespace BankSystem.Services
         public delegate decimal ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo);
 
 
-        //??? Объявляем обобщенный делегат func
+        // Объявляем обобщенный делегат func
         //public Func<decimal, Currency, Currency, decimal> funcExc = (sum, cur, cur2) => sum / cur.Rate * cur2.Rate;
-        public Func<decimal, Currency, Currency, decimal> funcExc;
+       public Func<decimal, Currency, Currency, decimal> funcExc;
         
         //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ
         public void Add<T>(T person) where T : Person
@@ -168,7 +168,8 @@ namespace BankSystem.Services
 
 
         // ИСПОЛЬЗУЯ FUNC ПЕРЕВОДИТ СРЕДСТВА С ОДНОГО СЧЕТА КЛИЕНТА НА ДРУГОЙ С КОНВЕРТАЦИЕЙ
-        public void MoneyTransferFunc(decimal sum, Account accountFrom, Account accountTo)
+        //подставляем в качестве параметра func вместе с сигнатурой
+        public void MoneyTransferFunc(decimal sum, Account accountFrom, Account accountTo, Func<decimal, Currency, Currency, decimal> funcExc)
         {
 
             if (accountFrom.Balance < sum)
