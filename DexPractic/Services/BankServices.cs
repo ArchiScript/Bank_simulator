@@ -205,13 +205,13 @@ namespace BankSystem.Services
         //подставляем в качестве параметра func вместе с сигнатурой
         public void MoneyTransferFunc(decimal sum, Account accountFrom, Account accountTo, Func<decimal, Currency, Currency, decimal> funcExc)
         {
-
-            if (accountFrom.Balance < sum)
+            try
             {
-                Console.WriteLine($"Недостаточно средств на счете {accountFrom}");
-            }
-            else
-            {
+                if (accountFrom.Balance < sum)
+                {
+                    throw new LowBalanceException($"Недостаточно средств на счете {accountFrom.AccNumber} " +
+                        $"для осуществления перевода суммой {sum} {accountFrom.CurrencyType.Sign}");
+                }
                 if (funcExc != null)
                 {
                     decimal result = funcExc(sum, accountFrom.CurrencyType, accountTo.CurrencyType); ;
@@ -223,6 +223,14 @@ namespace BankSystem.Services
                         $"{accountFrom.Balance} {accountFrom.CurrencyType.Sign} " +
                         $"\n на счете {accountTo.AccNumber} осталось {accountTo.Balance} {accountTo.CurrencyType.Sign}");
                 }
+            }
+            catch (LowBalanceException e)
+            {
+                Console.WriteLine($"Возникла ошибка при проведении банковской операции {e}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Перехвачено исключение {e.Message}");
             }
         }
 

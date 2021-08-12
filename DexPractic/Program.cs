@@ -133,7 +133,7 @@ namespace BankSystem
                     $" Счет {accs[2].AccNumber} {accs[2].Balance} {accs[2].CurrencyType.Sign} \n ");
 
                 //Передаем параметром метода func(то есть присвоенную CurrencyCoverter), 
-                bankServ.MoneyTransferFunc(120, accs[0], accs[2], funcExcDel);
+                bankServ.MoneyTransferFunc(732, accs[0], accs[2], funcExcDel);
             }
             else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
 
