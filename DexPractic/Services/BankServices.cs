@@ -4,6 +4,7 @@ using System.Text;
 using BankSystem.Models;
 using System.Linq;
 using BankSystem.Services;
+using BankSystem.Exceptions;
 
 namespace BankSystem.Services
 {
@@ -19,35 +20,68 @@ namespace BankSystem.Services
 
         // Объявляем обобщенный делегат func
         //public Func<decimal, Currency, Currency, decimal> funcExc = (sum, cur, cur2) => sum / cur.Rate * cur2.Rate;
-       public Func<decimal, Currency, Currency, decimal> funcExc;
-        
+        public Func<decimal, Currency, Currency, decimal> funcExc;
+
         //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ
         public void Add<T>(T person) where T : Person
         {
             if (person is Client)
             {
                 var client = person as Client;
-                clients.Add(new Client
+                try
                 {
-                    Name = client.Name,
-                    PassNumber = client.PassNumber,
-                    DateOfBirth = client.DateOfBirth,
-                    Id = client.Id,
-
-                });
+                    bool ageAllowed = IsAgeAllowed(18, DateTime.Parse(client.DateOfBirth));
+                    if (!ageAllowed)
+                    {
+                        throw new BankAdultException("Вы не достигли совершеннолетия");
+                    }
+                    clients.Add(new Client
+                    {
+                        Name = client.Name,
+                        PassNumber = client.PassNumber,
+                        DateOfBirth = client.DateOfBirth,
+                        Id = client.Id,
+                    });
+                }
+                catch (BankAdultException e)
+                {
+                    Console.WriteLine($"Возникла ошибка доступа по возрасту {e}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Перехвачено исключение {e.Message}");
+                }
             }
             else
             {
                 var employee = person as Employee;
-                employees.Add(new Employee
+                try
                 {
-                    Name = employee.Name,
-                    PassNumber = employee.PassNumber,
-                    DateOfBirth = employee.DateOfBirth,
-                    DateOfEmployment = employee.DateOfEmployment,
-                    Position = employee.Position,
-                    Id = employee.Id
-                });
+                    bool ageAllowed = IsAgeAllowed(18, DateTime.Parse(employee.DateOfBirth));
+                    if (!ageAllowed)
+                    {
+                        throw new BankAdultException("Вы не достигли совершеннолетия");
+                    }
+                    employees.Add(new Employee
+                    {
+                        Name = employee.Name,
+                        PassNumber = employee.PassNumber,
+                        DateOfBirth = employee.DateOfBirth,
+                        DateOfEmployment = employee.DateOfEmployment,
+                        Position = employee.Position,
+                        Id = employee.Id
+                    });
+                }
+                catch (BankAdultException e)
+                {
+                    Console.WriteLine($"Возникла ошибка доступа по возрасту {e}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Перехвачено исключение {e.Message}");
+                }
+
+
             }
         }
 
@@ -210,6 +244,12 @@ namespace BankSystem.Services
             return findNameCl.FirstOrDefault().Key;
         }
 
+        //ПРОВЕРЯЕТ НА МИНИМАЛЬНЫЙ ДОПУСТИМЫЙ ВОЗРАСТ
+        bool IsAgeAllowed(int minAge, DateTime birthDate)
+        {
+            double age = Math.Round(DateTime.Now.Subtract(birthDate).TotalDays / 365.25, 2);
+            return (age > minAge);
+        }
 
     }
 

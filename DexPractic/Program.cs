@@ -39,6 +39,15 @@ namespace BankSystem
             var testClDict = BankServices.clientsDict;
 
 
+            //Тестовое добавление клиента для проверки исключения по возрасту
+            bankServ.Add(new Client
+            {
+                Name = "Нина Ивановна Дрыщ",
+                PassNumber = "I-ПР133242",
+                DateOfBirth = "17.05.2004",
+                Id = 19
+            });
+
             //Найти из словаря и показать
             var testPair = bankServ.FindFromDict("I-ПР012341");
             foreach (var pair in testPair)
@@ -127,6 +136,9 @@ namespace BankSystem
                 bankServ.MoneyTransferFunc(120, accs[0], accs[2], funcExcDel);
             }
             else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
+
+
+
 
         }
 
