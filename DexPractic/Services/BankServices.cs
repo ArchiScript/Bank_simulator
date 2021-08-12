@@ -5,6 +5,8 @@ using BankSystem.Models;
 using System.Linq;
 using BankSystem.Services;
 using BankSystem.Exceptions;
+using System.IO;
+
 
 namespace BankSystem.Services
 {
@@ -25,6 +27,18 @@ namespace BankSystem.Services
         //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ
         public void Add<T>(T person) where T : Person
         {
+            //D:\WEBDEV\Dex_Practic
+            //Работа с файлами//
+
+            string path = Path.Combine("D:", "WEBDEV", "Dex_Practic", "BankSystemFiles");
+            DirectoryInfo directoryInfo = new DirectoryInfo(path);
+            if (!directoryInfo.Exists)
+            {
+                directoryInfo.Create();
+            }
+
+
+            ////////
             if (person is Client)
             {
                 var client = person as Client;
@@ -42,6 +56,24 @@ namespace BankSystem.Services
                         DateOfBirth = client.DateOfBirth,
                         Id = client.Id,
                     });
+
+                    /*using (FileStream fileStream1 = new FileStream($"{path}\\Clients&Employees.txt", FileMode.Append))
+                    {
+                        string textData = client.Name + client.PassNumber + client.DateOfBirth;
+                        byte[] array = System.Text.Encoding.Default.GetBytes(textData);
+                        fileStream.Write(array, 0, array.Length);
+                    }*/
+                    using (FileStream fileStream = new FileStream($"{path}\\Clients&Employees.txt", FileMode.Open))
+                    {
+                        byte[] dataArr = new byte[fileStream.Length];
+                        fileStream.Read(dataArr, 0, dataArr.Length);
+                        string readData = System.Text.Encoding.Default.GetString(dataArr);
+                        if (readData == "")
+                        {
+                           
+                        }
+                    }
+
                 }
                 catch (BankAdultException e)
                 {
