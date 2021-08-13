@@ -15,7 +15,8 @@ namespace BankSystem.Services
         public static List<Client> clients = new List<Client>();
         public static List<Employee> employees = new List<Employee>();
         public static Dictionary<Client, List<Account>> clientsDict = new Dictionary<Client, List<Account>>();
-
+        private string listClientData;
+        private string listEmployeeData;
         //Определяем делегат
         public delegate decimal ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo);
 
@@ -24,21 +25,19 @@ namespace BankSystem.Services
         //public Func<decimal, Currency, Currency, decimal> funcExc = (sum, cur, cur2) => sum / cur.Rate * cur2.Rate;
         public Func<decimal, Currency, Currency, decimal> funcExc;
 
-        //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ
-        public void Add<T>(T person) where T : Person
+
+        //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ, ПРОВЕРЯЕТ НА ВОЗРАСТ, ПИШЕТ В ФАЙЛ
+        public void Add<T>( T person) where T : Person
         {
             //D:\WEBDEV\Dex_Practic
-            //Работа с файлами//
-
-            string path = Path.Combine("D:", "WEBDEV", "Dex_Practic", "BankSystemFiles");
+            //G:\C#Projects\DexPractic_Bank_System
+            //string path = Path.Combine("D:", "WEBDEV", "Dex_Practic", "BankSystemFiles");
+            string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
             if (!directoryInfo.Exists)
             {
                 directoryInfo.Create();
             }
-
-
-            ////////
             if (person is Client)
             {
                 var client = person as Client;
@@ -56,23 +55,6 @@ namespace BankSystem.Services
                         DateOfBirth = client.DateOfBirth,
                         Id = client.Id,
                     });
-
-                    /*using (FileStream fileStream1 = new FileStream($"{path}\\Clients&Employees.txt", FileMode.Append))
-                    {
-                        string textData = client.Name + client.PassNumber + client.DateOfBirth;
-                        byte[] array = System.Text.Encoding.Default.GetBytes(textData);
-                        fileStream.Write(array, 0, array.Length);
-                    }*/
-                    using (FileStream fileStream = new FileStream($"{path}\\Clients&Employees.txt", FileMode.Open))
-                    {
-                        byte[] dataArr = new byte[fileStream.Length];
-                        fileStream.Read(dataArr, 0, dataArr.Length);
-                        string readData = System.Text.Encoding.Default.GetString(dataArr);
-                        if (readData == "")
-                        {
-                           
-                        }
-                    }
 
                 }
                 catch (BankAdultException e)
@@ -112,13 +94,35 @@ namespace BankSystem.Services
                 {
                     Console.WriteLine($"Перехвачено исключение {e.Message}");
                 }
-
-
             }
+            listClientData = "";
+            listEmployeeData = "";
+            foreach (var client in clients)
+            {
+                using (FileStream fileStream = new FileStream($"{path}\\Clients&Employees.txt", FileMode.Truncate))
+                {
+                    listClientData += $"Клиент,{client.Name},{client.PassNumber},{client.DateOfBirth},{Convert.ToString(client.Id)}{Environment.NewLine}";
+                    byte[] array = System.Text.Encoding.Default.GetBytes(listClientData);
+                    fileStream.Write(array, 0, array.Length);
+                }
+            }
+
+            foreach (var emp in employees)
+            {
+                using (FileStream fileStream1 = new FileStream($"{path}\\Clients&Employees.txt", FileMode.Append))
+                {
+                    listEmployeeData += $"Сотрудник,{emp.Name},{emp.PassNumber}," +
+                        $"{emp.DateOfBirth},{emp.DateOfEmployment}," +
+                        $"{emp.Position},{Convert.ToString(emp.Id)}{Environment.NewLine}";
+                    byte[] array = System.Text.Encoding.Default.GetBytes(listEmployeeData);
+                    fileStream1.Write(array, 0, array.Length);
+                }
+            }
+
         }
 
 
-        //ДОБАВЛЯЕТ НОВЫЙ СЧЕТ КЛИЕНТУ, ИЛИ НОВОГО КЛИЕНТА И СЧЕТ
+        //ДОБАВЛЯЕТ В СЛОВАРЬ НОВЫЙ СЧЕТ КЛИЕНТУ, ИЛИ НОВОГО КЛИЕНТА И СЧЕТ
         public void AddClientAccount(Client client, Account account)
         {
             if (clientsDict.Keys.Contains(client))

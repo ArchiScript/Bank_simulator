@@ -14,7 +14,7 @@ namespace BankSystem
 
             var bankServ = new BankServices();
 
-            //Заполнение словаря
+            //Заполнение листа
             for (int i = 1; i <= 5; i++)
             {
                 var rand = new Random();
@@ -25,6 +25,7 @@ namespace BankSystem
                     DateOfBirth = $"{rand.Next(1, 30)}.{rand.Next(1, 12)}.{rand.Next(1955, 2002)}",
                     Id = i,
                 });
+
 
                 ulong uli = (ulong)i;
                 bankServ.AddClientAccount(new Client
@@ -39,13 +40,22 @@ namespace BankSystem
             var testClDict = BankServices.clientsDict;
 
 
-            //Тестовое добавление клиента для проверки исключения по возрасту
+            //Тестовое добавление клиента и сотр для проверки исключения по возрасту
             bankServ.Add(new Client
             {
                 Name = "Нина Ивановна Дрыщ",
                 PassNumber = "I-ПР133242",
-                DateOfBirth = "17.05.2004",
+                DateOfBirth = "17.05.2002",
                 Id = 19
+            });
+            bankServ.Add(new Employee
+            {
+                Name = $"Денис Ростиславович Бабаев",
+                PassNumber = $"I-ПР032360",
+                DateOfBirth = $"12.05.1975",
+                Id = 20,
+                DateOfEmployment = $"25.08.2016",
+                Position = $"Директор"
             });
 
             //Найти из словаря и показать
@@ -61,7 +71,7 @@ namespace BankSystem
             var testExchange = new Exchange().ConvertCurrency<Currency>(100, new EUR(), new USD());
             Console.WriteLine($" \n Сконвертировано: {testExchange}");
 
-            // Добавление новый счетов
+            // Добавление доп счетов
             bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
             {
                 AccNumber = 1013,
@@ -133,7 +143,7 @@ namespace BankSystem
                     $" Счет {accs[2].AccNumber} {accs[2].Balance} {accs[2].CurrencyType.Sign} \n ");
 
                 //Передаем параметром метода func(то есть присвоенную CurrencyCoverter), 
-                bankServ.MoneyTransferFunc(732, accs[0], accs[2], funcExcDel);
+                bankServ.MoneyTransferFunc(400, accs[0], accs[2], funcExcDel);
             }
             else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
 
