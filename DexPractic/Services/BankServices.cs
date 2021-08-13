@@ -17,6 +17,7 @@ namespace BankSystem.Services
         public static Dictionary<Client, List<Account>> clientsDict = new Dictionary<Client, List<Account>>();
         private string listClientData;
         private string listEmployeeData;
+        private string dictClientData;
         //Определяем делегат
         public delegate decimal ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo);
 
@@ -27,7 +28,7 @@ namespace BankSystem.Services
 
 
         //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ, ПРОВЕРЯЕТ НА ВОЗРАСТ, ПИШЕТ В ФАЙЛ
-        public void Add<T>( T person) where T : Person
+        public void Add<T>(T person) where T : Person
         {
             //D:\WEBDEV\Dex_Practic
             //G:\C#Projects\DexPractic_Bank_System
@@ -141,6 +142,31 @@ namespace BankSystem.Services
                     CurrencyType = account.CurrencyType
                 });
             }
+
+            string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
+            DirectoryInfo directoryInfo = new DirectoryInfo(path);
+            if (!directoryInfo.Exists)
+            {
+                directoryInfo.Create();
+            }
+            dictClientData = "";
+            foreach (var pair in clientsDict)
+            {
+                foreach (var acc in pair.Value)
+                {
+                    dictClientData += $"{pair.Key.Name},{pair.Key.PassNumber},{pair.Key.DateOfBirth}," +
+                    $"{Convert.ToString(pair.Key.Id)};{acc.AccNumber},{acc.Balance},{acc.CurrencyType.Sign}{Environment.NewLine}";
+                }
+
+            }
+            using (FileStream fileStream = new FileStream($"{path}\\Clients&Accounts.txt", FileMode.Truncate))
+            {
+                
+                byte[] array = System.Text.Encoding.Default.GetBytes(dictClientData);
+                fileStream.Write(array, 0, array.Length);
+            }
+
+
         }
 
 
