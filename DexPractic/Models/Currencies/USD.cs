@@ -9,7 +9,7 @@ namespace BankSystem.Models
         public USD()
         {
            Rate = 1.0m;
-            Sign = "USD";
+           Sign = "USD";
         }
     }
 }

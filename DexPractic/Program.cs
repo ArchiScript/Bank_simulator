@@ -72,17 +72,17 @@ namespace BankSystem
             Console.WriteLine($" \n Сконвертировано: {testExchange}");
 
             // Добавление доп счетов
-            bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
+            /*bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
             {
                 AccNumber = 1013,
                 Balance = 945,
                 CurrencyType = new UAH()
-            });
+            });*/
             bankServ.AddClientAccount(new Client
             {
                 Name = "Василий Петрович Петров",
                 DateOfBirth = "12.05.1947",
-                Id = 888,
+                Id = 21,
                 PassNumber = "I-ПР012883"
             },
             new Account
@@ -91,12 +91,12 @@ namespace BankSystem
                 Balance = 675,
                 CurrencyType = new RUB()
             });
-            bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
+           /* bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
             {
                 AccNumber = 1025,
                 Balance = 895,
                 CurrencyType = new MDL()
-            });
+            });*/
 
 
             //Вывод в консоль всех клиентов в словаре
@@ -148,9 +148,14 @@ namespace BankSystem
             else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
 
 
-
-
+            var dictFromFile = bankServ.GetDictFromFile();
+            foreach (var pair in dictFromFile)
+            {
+                foreach (var acc in pair.Value)
+                {
+                    Console.WriteLine($"Это данные словаря из файла {pair.Key.Name} {pair.Key.PassNumber} {acc.AccNumber} {acc.Balance} {acc.CurrencyType.Sign}");
+                }
+            }
         }
-
     }
 }
