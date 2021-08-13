@@ -27,7 +27,7 @@ namespace BankSystem.Services
         public Func<decimal, Currency, Currency, decimal> funcExc;
 
 
-        //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ, ПРОВЕРЯЕТ НА ВОЗРАСТ, ПИШЕТ В ФАЙЛ
+        //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ, ПРОВЕРЯЕТ НА ВОЗРАСТ, ------ПИШЕТ В ФАЙЛ
         public void Add<T>(T person) where T : Person
         {
             //D:\WEBDEV\Dex_Practic
@@ -123,7 +123,7 @@ namespace BankSystem.Services
         }
 
 
-        //ДОБАВЛЯЕТ В СЛОВАРЬ НОВЫЙ СЧЕТ КЛИЕНТУ, ИЛИ НОВОГО КЛИЕНТА И СЧЕТ
+        //ДОБАВЛЯЕТ В СЛОВАРЬ НОВЫЙ СЧЕТ КЛИЕНТУ, ИЛИ НОВОГО КЛИЕНТА И СЧЕТ, ------ПИШЕТ В ФАЙЛ
         public void AddClientAccount(Client client, Account account)
         {
             if (clientsDict.Keys.Contains(client))
@@ -155,18 +155,24 @@ namespace BankSystem.Services
                 foreach (var acc in pair.Value)
                 {
                     dictClientData += $"{pair.Key.Name},{pair.Key.PassNumber},{pair.Key.DateOfBirth}," +
-                    $"{Convert.ToString(pair.Key.Id)};{acc.AccNumber},{acc.Balance},{acc.CurrencyType.Sign}{Environment.NewLine}";
+                    $"{pair.Key.Id};{acc.AccNumber},{acc.Balance}{Environment.NewLine}";
                 }
-
             }
-            using (FileStream fileStream = new FileStream($"{path}\\Clients&Accounts.txt", FileMode.Truncate))
+            string pathToFile = $@"{path}\Clients&Accounts.txt";
+            FileStream fstrm;
+            if (File.Exists(pathToFile))
             {
-                
+               fstrm = new FileStream(pathToFile, FileMode.Truncate);
+            }
+            else
+            {
+                fstrm = new FileStream(pathToFile, FileMode.Append);
+            }
+            using (FileStream fileStream = fstrm)
+            {
                 byte[] array = System.Text.Encoding.Default.GetBytes(dictClientData);
                 fileStream.Write(array, 0, array.Length);
             }
-
-
         }
 
 
@@ -186,6 +192,55 @@ namespace BankSystem.Services
             return newDic;
         }
 
+
+        public Dictionary<Client, List<Account>> GetDictFromFile()
+        {
+
+            Dictionary<Client, List<Account>> returnDict = new Dictionary<Client, List<Account>>();
+            string path = $@"G:\C#Projects\DexPractic_Bank_System\BankSystemFiles";
+            DirectoryInfo directoryInfo = new DirectoryInfo(path);
+
+            if (!directoryInfo.Exists)
+            {
+                directoryInfo.Create();
+            }
+            string pathToFile = $@"{path}\Clients&Accounts.txt";
+            
+            if (!File.Exists(pathToFile))
+            {
+                File.Create(pathToFile);
+            }
+
+            using (FileStream fileStream = new FileStream(pathToFile, FileMode.Open))
+            {
+                byte[] array = new byte[fileStream.Length];
+                fileStream.Read(array, 0, array.Length);
+                string readData = System.Text.Encoding.Default.GetString(array);
+                var pairsArr = readData.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var pair in pairsArr)
+                {
+                    var objs = pair.Split(";", StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var obj in objs)
+                    {
+                        var property = obj.Split(",", StringSplitOptions.RemoveEmptyEntries);
+                        object currency = (object)property[6];
+                        Currency prop = currency as Currency;
+                        
+                        returnDict.Add(new Client {
+                            Name = property[0],
+                            PassNumber = property[1],
+                            DateOfBirth = property[2],
+                            Id = Convert.ToInt32(property[3])
+
+
+                        }, new Account { 
+                            AccNumber = (ulong)Convert.ToInt64(property[4]),
+                            Balance = Convert.ToInt32(property[5]), 
+                            CurrencyType = property[6]});
+                    }
+                }
+            }
+        }
 
         //ВОЗВРАЩАЕТ IPerson С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА
         public IPerson Find<T>(string passNumber) where T : IPerson
