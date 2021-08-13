@@ -128,13 +128,13 @@ namespace BankSystem.Services
         {
             if (clientsDict.Keys.Contains(client))
             {
-                Console.WriteLine($"У клиента {client.Name} уже есть счет");
+                //Console.WriteLine($"У клиента {client.Name} уже есть счет");
                 var accList = clientsDict[client];
                 accList.Add(account);
             }
             else
             {
-                Console.WriteLine($"Добавляется счет и клиент");
+                //Console.WriteLine($"Добавляется счет и клиент");
                 clientsDict.Add(client, new List<Account>());
                 var accNew = clientsDict[client];
                 accNew.Add(new Account
@@ -263,7 +263,7 @@ namespace BankSystem.Services
 
         //ВОЗВРАЩАЕТ IPerson С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА
         public IPerson Find<T>(string passNumber) where T : IPerson
-        {
+        { 
             var findNameEmp =
            from employee in employees
            where employee.PassNumber == passNumber

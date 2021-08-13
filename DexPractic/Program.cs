@@ -13,12 +13,13 @@ namespace BankSystem
 
 
             var bankServ = new BankServices();
-
+            
             //Заполнение листа
             for (int i = 1; i <= 5; i++)
             {
                 var rand = new Random();
-                bankServ.Add(new Client
+                
+                    bankServ.Add(new Client
                 {
                     Name = $"Имя{i} Фамилия{i} Отчество{i}",
                     PassNumber = $"I-ПР01234{i}",
