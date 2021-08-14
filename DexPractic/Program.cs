@@ -13,13 +13,13 @@ namespace BankSystem
 
 
             var bankServ = new BankServices();
-            
+
             //Заполнение листа
             for (int i = 1; i <= 5; i++)
             {
                 var rand = new Random();
-                
-                    bankServ.Add(new Client
+
+                bankServ.Add(new Client
                 {
                     Name = $"Имя{i} Фамилия{i} Отчество{i}",
                     PassNumber = $"I-ПР01234{i}",
@@ -27,7 +27,7 @@ namespace BankSystem
                     Id = i,
                 });
 
-
+                // Заполнение словаря
                 ulong uli = (ulong)i;
                 bankServ.AddClientAccount(new Client
                 {
@@ -41,7 +41,7 @@ namespace BankSystem
             var testClDict = BankServices.clientsDict;
 
 
-            //Тестовое добавление клиента и сотр для проверки исключения по возрасту
+            //Тестовое добавление в лист клиента и сотр для проверки исключения по возрасту
             bankServ.Add(new Client
             {
                 Name = "Нина Ивановна Дрыщ",
@@ -73,12 +73,18 @@ namespace BankSystem
             Console.WriteLine($" \n Сконвертировано: {testExchange}");
 
             // Добавление доп счетов
-            /*bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
+            bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
             {
                 AccNumber = 1013,
                 Balance = 945,
                 CurrencyType = new UAH()
-            });*/
+            });
+            bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
+            {
+                AccNumber = 1025,
+                Balance = 895,
+                CurrencyType = new MDL()
+            });
             bankServ.AddClientAccount(new Client
             {
                 Name = "Василий Петрович Петров",
@@ -92,22 +98,31 @@ namespace BankSystem
                 Balance = 675,
                 CurrencyType = new RUB()
             });
-           /* bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
-            {
-                AccNumber = 1025,
-                Balance = 895,
-                CurrencyType = new MDL()
-            });*/
+
 
 
             //Вывод в консоль всех клиентов в словаре
             foreach (var pair in testClDict)
             {
-                foreach (var ac in pair.Value)
+                if (pair.Value.Count > 1)
                 {
-                    Console.WriteLine($"{pair.Key.Name} {pair.Key.PassNumber} " +
-                        $"{ac.AccNumber} {ac.Balance} {ac.CurrencyType.Sign}");
+                    Console.WriteLine($"счета клиента {pair.Key.Name}: \n ");
+                    foreach (var ac in pair.Value)
+                    {
+                        Console.WriteLine($"{ac.AccNumber} {ac.Balance} {ac.CurrencyType.Sign}");
+                    }
                 }
+                else
+                {
+                    foreach (var ac in pair.Value)
+                    {
+                        Console.WriteLine($"{pair.Key.Name} {pair.Key.PassNumber} {ac.AccNumber}" +
+                            $" {ac.Balance} {ac.CurrencyType.Sign}");
+                    }
+                }
+
+
+
 
             }
             Console.WriteLine("\n");
@@ -148,7 +163,15 @@ namespace BankSystem
             }
             else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
 
-
+            /*var reverceDictFromFile = bankServ.GetDictFromFile();
+            foreach (var pair in reverceDictFromFile)
+            {
+                foreach (var acc in pair.Key)
+                {
+                    Console.WriteLine($"Это данные словаря из файла {pair.Value.Name} {pair.Value.PassNumber}" +
+                        $" {acc.AccNumber} {acc.Balance} {acc.CurrencyType.Sign}");
+                }
+            }*/
             var dictFromFile = bankServ.GetDictFromFile();
             foreach (var pair in dictFromFile)
             {

@@ -15,9 +15,15 @@ namespace BankSystem.Services
         public static List<Client> clients = new List<Client>();
         public static List<Employee> employees = new List<Employee>();
         public static Dictionary<Client, List<Account>> clientsDict = new Dictionary<Client, List<Account>>();
+        public static Dictionary<List<Account>, Client> accountsDict = new Dictionary<List<Account>, Client>();
         private string listClientData;
         private string listEmployeeData;
         private string dictClientData;
+        private string dictAccountData;
+        private string dictAllData;
+        public static List<Client> testClList = new List<Client>();
+        public static Dictionary<Account, string> testAccDict = new Dictionary<Account, string>();
+        public static Dictionary<Account, Client> testAccClDict = new Dictionary<Account, Client>();
         //Определяем делегат
         public delegate decimal ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo);
 
@@ -128,21 +134,24 @@ namespace BankSystem.Services
         {
             if (clientsDict.Keys.Contains(client))
             {
-                //Console.WriteLine($"У клиента {client.Name} уже есть счет");
-                var accList = clientsDict[client];
-                accList.Add(account);
+                Console.WriteLine($"Клиент {client.Name} уже есть в базе...добавляем счет");
+                var clDict = clientsDict[client];
+                clDict.Add(account);
+                //Добавляем в словарь со счетами в качестве ключа
+                List<Account> acList = new List<Account>();
+                acList.Add(account);
+                //accountsDict.Add(acList, client);
             }
             else
             {
-                //Console.WriteLine($"Добавляется счет и клиент");
+                Console.WriteLine($"Добавляется клиент и счет");
                 clientsDict.Add(client, new List<Account>());
                 var accNew = clientsDict[client];
-                accNew.Add(new Account
-                {
-                    AccNumber = account.AccNumber,
-                    Balance = account.Balance,
-                    CurrencyType = account.CurrencyType
-                });
+                accNew.Add(account);
+                List<Account> acList = new List<Account>();
+                acList.Add(account);
+                //accountsDict.Add(acList, client);
+
             }
 
             string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
@@ -152,29 +161,55 @@ namespace BankSystem.Services
                 directoryInfo.Create();
             }
             dictClientData = "";
+            dictAccountData = "";
+            dictAllData = "";
+            var br = Environment.NewLine;
             foreach (var pair in clientsDict)
             {
+                dictAllData += $"{pair.Key.Name};{pair.Key.PassNumber};{pair.Key.DateOfBirth};{pair.Key.Id}/";
+                dictClientData += $"{pair.Key.Name},{pair.Key.PassNumber},{pair.Key.DateOfBirth},{pair.Key.Id}{br}";
                 foreach (var acc in pair.Value)
                 {
-                    dictClientData += $"{pair.Key.Name},{pair.Key.PassNumber},{pair.Key.DateOfBirth}," +
-                    $"{pair.Key.Id},{acc.AccNumber},{acc.Balance},{acc.CurrencyType.Sign}{Environment.NewLine}";
+                    dictAllData += $"{acc.AccNumber},{acc.Balance},{acc.CurrencyType.Sign};";
+
+                    dictAccountData += $"{acc.AccNumber},{acc.Balance},{acc.CurrencyType.Sign},{pair.Key.PassNumber}{br}";
                 }
+                dictAllData += $"{br}";
             }
-            string pathToFile = $@"{path}\Clients&Accounts.txt";
-            FileStream fstrm;
-            if (File.Exists(pathToFile))
+            string pathToClAcc = $@"{path}\Clients&Accounts.txt";
+            string pathToClient = $@"{path}\Clients.txt";
+            string pathToAccount = $@"{path}\Accounts.txt";
+            FileStream fstrmCl;
+            FileStream fstrmAc;
+            FileStream fstrmClAc;
+            if (File.Exists(pathToClient) && File.Exists(pathToAccount) && File.Exists(pathToClAcc))
             {
-                fstrm = new FileStream(pathToFile, FileMode.Truncate);
+                fstrmCl = new FileStream(pathToClient, FileMode.Truncate);
+                fstrmAc = new FileStream(pathToAccount, FileMode.Truncate);
+                fstrmClAc = new FileStream(pathToClAcc, FileMode.Truncate);
             }
             else
             {
-                fstrm = new FileStream(pathToFile, FileMode.Append);
+                fstrmCl = new FileStream(pathToClient, FileMode.Append);
+                fstrmAc = new FileStream(pathToAccount, FileMode.Append);
+                fstrmClAc = new FileStream(pathToClAcc, FileMode.Append);
             }
-            using (FileStream fileStream = fstrm)
+            using (FileStream fileStream = fstrmCl)
             {
                 byte[] array = System.Text.Encoding.Default.GetBytes(dictClientData);
                 fileStream.Write(array, 0, array.Length);
             }
+            using (FileStream fileStream = fstrmAc)
+            {
+                byte[] array = System.Text.Encoding.Default.GetBytes(dictAccountData);
+                fileStream.Write(array, 0, array.Length);
+            }
+            using (FileStream fileStream = fstrmClAc)
+            {
+                byte[] array = System.Text.Encoding.Default.GetBytes(dictAllData);
+                fileStream.Write(array, 0, array.Length);
+            }
+
         }
 
 
@@ -199,30 +234,56 @@ namespace BankSystem.Services
         public Dictionary<Client, List<Account>> GetDictFromFile()
         {
             Dictionary<Client, List<Account>> returnDict = new Dictionary<Client, List<Account>>();
+            Dictionary<List<Account>, Client> returnDictReverse = new Dictionary<List<Account>, Client>();
             string path = $@"G:\C#Projects\DexPractic_Bank_System\BankSystemFiles";
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
-
+            var br = Environment.NewLine;
+            var trimSplit = StringSplitOptions.RemoveEmptyEntries;
             if (!directoryInfo.Exists)
             {
                 directoryInfo.Create();
             }
-            string pathToFile = $@"{path}\Clients&Accounts.txt";
-            if (!File.Exists(pathToFile))
+            string pathToClAcc = $@"{path}\Clients&Accounts.txt";
+            string pathToCl = $@"{path}\Clients.txt";
+            string pathToAcc = $@"{path}\Accounts.txt";
+            if (!File.Exists(pathToClAcc))
             {
-                File.Create(pathToFile);
+                File.Create(pathToClAcc);
             }
-            using (FileStream fileStream = new FileStream(pathToFile, FileMode.Open))
+
+            //////////////Чтение файла и добавление КЛИЕНТА в лист
+            using (FileStream fileStream = new FileStream(pathToCl, FileMode.Open))
             {
                 byte[] array = new byte[fileStream.Length];
                 fileStream.Read(array, 0, array.Length);
                 string readData = System.Text.Encoding.Default.GetString(array);
-                var pairsArr = readData.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var pair in pairsArr)
+                var ClArr = readData.Split(br, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var cl in ClArr)
                 {
-                    var property = pair.Split(",", StringSplitOptions.RemoveEmptyEntries);
+                    var properties = cl.Split(",", StringSplitOptions.RemoveEmptyEntries);
+                    testClList.Add(new Client
+                    {
+                        Name = properties[0],
+                        PassNumber = properties[1],
+                        DateOfBirth = properties[2],
+                        Id = Convert.ToInt32(properties[3])
+                    });
+                }
+            }
 
+            //////////////Чтение файла и добавление  СЧЕТА в лист
+            using (FileStream fileStream = new FileStream(pathToAcc, FileMode.Open))
+            {
+                byte[] array = new byte[fileStream.Length];
+                fileStream.Read(array, 0, array.Length);
+                string readData = System.Text.Encoding.Default.GetString(array);
+                var AccArr = readData.Split(br, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var acc in AccArr)
+                {
+                    var props = acc.Split(",", StringSplitOptions.RemoveEmptyEntries);
                     Currency cur;
-                    switch (property[6])
+                    switch (props[2])
                     {
                         case "USD":
                             cur = new USD();
@@ -236,34 +297,101 @@ namespace BankSystem.Services
                         case "MDL":
                             cur = new MDL();
                             break;
+                        case "RUB":
+                            cur = new RUB();
+                            break;
                         default:
                             cur = new USD();
                             break;
                     }
-                    //Console.WriteLine(cur.Rate);
-                    List<Account> accList = new List<Account>();
-                    accList.Add(new Account
+                    testAccDict.Add(new Account
                     {
-                        AccNumber = (ulong)Convert.ToInt64(property[4]),
-                        Balance = Convert.ToDecimal(property[5]),
+                        AccNumber = (ulong)Convert.ToUInt64(props[0]),
+                        Balance = Convert.ToDecimal(props[1]),
                         CurrencyType = cur
-                    });
-                    returnDict.Add(new Client
-                    {
-                        Name = property[0],
-                        PassNumber = property[1],
-                        DateOfBirth = property[2],
-                        Id = Convert.ToInt32(property[3])
-
-                    }, accList);
+                    }, props[3]);
                 }
+            }
+            ////////////////////Совмещение аккаунтов и клиентов
+            foreach (var pair in testAccDict)
+            {
+                Console.WriteLine($"{pair.Key.AccNumber} {pair.Key.Balance} {pair.Key.CurrencyType.Sign} {pair.Value}");
+            }
+
+            ///////////////Чтение файла  и добавление акк и кл в словарь
+
+            using (FileStream fileStream = new FileStream(pathToClAcc, FileMode.Open))
+            {
+                byte[] array = new byte[fileStream.Length];
+                fileStream.Read(array, 0, array.Length);
+                string readData = System.Text.Encoding.Default.GetString(array);
+                var pairsArr = readData.Split(br, trimSplit);
+                var currentAccList = new List<Account>();
+                foreach (var pair in pairsArr)
+                {
+                    var objs = pair.Split("/", trimSplit);
+                    var clProps = objs[0].Split(";", trimSplit);
+
+                    ///Добавляем в клиента данные из файла
+                    var currentCl = new Client
+                    {
+                        Name = clProps[0],
+                        DateOfBirth = clProps[1],
+                        PassNumber = clProps[2],
+                        Id = Convert.ToInt32(clProps[3])
+                    };
+
+                    var accs = objs[1].Split(";", trimSplit);
+                    
+                    foreach (var acc in accs)
+                    {
+
+                        var accProps = acc.Split(",", trimSplit);
+
+                        Console.WriteLine($"-------{acc}  {accProps[0]} {accProps[1]} {accProps[2]}");
+                        Currency cur;
+                        switch (accProps[2])
+                        {
+                            case "USD":
+                                cur = new USD();
+                                break;
+                            case "UAH":
+                                cur = new UAH();
+                                break;
+                            case "EUR":
+                                cur = new EUR();
+                                break;
+                            case "MDL":
+                                cur = new MDL();
+                                break;
+                            case "RUB":
+                                cur = new RUB();
+                                break;
+                            default:
+                                cur = new USD();
+                                break;
+                        }
+
+                        
+                        currentAccList.Add(new Account
+                        {
+                            AccNumber = (ulong)Convert.ToInt64(accProps[0]),
+                            Balance = Convert.ToDecimal(accProps[1]),
+                            CurrencyType = cur
+                        });
+
+                       
+                    }
+                    returnDict.Add(currentCl, currentAccList);
+                }
+                
             }
             return returnDict;
         }
 
         //ВОЗВРАЩАЕТ IPerson С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА
         public IPerson Find<T>(string passNumber) where T : IPerson
-        { 
+        {
             var findNameEmp =
            from employee in employees
            where employee.PassNumber == passNumber
