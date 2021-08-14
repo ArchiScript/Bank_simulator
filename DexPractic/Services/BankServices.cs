@@ -232,7 +232,7 @@ namespace BankSystem.Services
 
 
         //ВОЗВРАЩАЕТ СЛОВАРЬ С ДАННЫМИ ИЗ ФАЙЛА
-        public Dictionary<Client, List<Account>> GetDictFromFile()
+        public Dictionary<List<Account>, Client> GetDictFromFile()
         {
             Dictionary<Client, List<Account>> returnDict = new Dictionary<Client, List<Account>>();
             Dictionary<List<Account>, Client> returnDictReverse = new Dictionary<List<Account>, Client>();
@@ -279,7 +279,7 @@ namespace BankSystem.Services
                 fileStream.Read(array, 0, array.Length);
                 string readData = System.Text.Encoding.Default.GetString(array);
                 var AccArr = readData.Split(br, StringSplitOptions.RemoveEmptyEntries);
-
+                
                 foreach (var acc in AccArr)
                 {
                     var props = acc.Split(",", StringSplitOptions.RemoveEmptyEntries);
@@ -310,14 +310,16 @@ namespace BankSystem.Services
                         AccNumber = (ulong)Convert.ToUInt64(props[0]),
                         Balance = Convert.ToDecimal(props[1]),
                         CurrencyType = cur
-                    }, new Client {
-                        PassNumber = props[3], 
-                        Name = props[4], 
-                        DateOfBirth = props[5], 
-                        Id = Convert.ToInt32(props[6]) }
+                    }, new Client
+                    {
+                        PassNumber = props[3],
+                        Name = props[4],
+                        DateOfBirth = props[5],
+                        Id = Convert.ToInt32(props[6])
+                    }
                     );
                 }
-                
+
             }
             ////////////////////Совмещение аккаунтов и клиентов
             foreach (var pair in testAccClDict)
@@ -327,13 +329,10 @@ namespace BankSystem.Services
                     $" {pair.Value.DateOfBirth} {pair.Value.Id} {pair.Key.AccNumber}" +
                     $" {pair.Key.Balance} {pair.Key.CurrencyType.Sign}");
 
-                //returnDict
             }
-            var query =
-                from cl in testAccClDict
-                group cl by cl.Value.PassNumber;
-                
-
+            var accGroup = from cl in testAccClDict.Values
+                           group cl by cl.PassNumber into g
+                           select new List<Account>().Add(g);
             ///////////////Чтение файла  и добавление акк и кл в словарь
 
             using (FileStream fileStream = new FileStream(pathToClAcc, FileMode.Open))
@@ -342,27 +341,21 @@ namespace BankSystem.Services
                 fileStream.Read(array, 0, array.Length);
                 string readData = System.Text.Encoding.Default.GetString(array);
                 var pairsArr = readData.Split(br, trimSplit);
-                /*var currentCl = new Client();*/
+                Client currentCl;
                 var currentAccList = new List<Account>();
 
+
+                ///Добавляем в клиента данные из файла
                 foreach (var pair in pairsArr)
                 {
                     var objs = pair.Split("/", trimSplit);
-
-                    ///Добавляем в клиента данные из файла
-
-                    //Console.WriteLine($"---------------{objs[0]}");
-                        var clProps = objs[0].Split(";", trimSplit);
-                        var currentCl = new Client
-                        {
-                            Name = clProps[0],
-                            DateOfBirth = clProps[1],
-                            PassNumber = clProps[2],
-                            Id = Convert.ToInt32(clProps[3])
-                        };
-
-                    //Console.WriteLine("==============="+currentCl.Name);
+                    var clProps = objs[0].Split(";", trimSplit);
                     var accs = objs[1].Split(";", trimSplit);
+                    Console.WriteLine(accs.Count());
+
+                   
+
+                    //Console.WriteLine($"-------------{currentCl.Name}{currentCl.PassNumber}");
 
                     foreach (var acc in accs)
                     {
@@ -389,30 +382,37 @@ namespace BankSystem.Services
                                 cur = new USD();
                                 break;
                         }
+
+                        currentCl = new Client
+                        {
+                            Name = clProps[0],
+                            DateOfBirth = clProps[1],
+                            PassNumber = clProps[2],
+                            Id = Convert.ToInt32(clProps[3])
+                        };
+
                         currentAccList.Add(new Account
                         {
-                            AccNumber = (ulong)Convert.ToInt64(accProps[0]),
+                            AccNumber = (ulong)Convert.ToUInt64(accProps[0]),
                             Balance = Convert.ToDecimal(accProps[1]),
                             CurrencyType = cur
                         });
-                        accountsDict.Add(currentAccList, currentCl);
-                        /*var currentAc = new Account
+
+                        returnDictReverse.Add(currentAccList, currentCl);
+                        foreach (var item in returnDictReverse)
                         {
-                            AccNumber = (ulong)Convert.ToInt64(accProps[0]),
-                            Balance = Convert.ToDecimal(accProps[1]),
-                            CurrencyType = cur
-                        };
-                        testAccClDict.Add(currentAc, currentCl);
-                        foreach (var item in testAccClDict)
-                        {
-                            Console.WriteLine(item.Key.AccNumber + item.Value.Name);
-                        }*/
+                            foreach (var ac in item.Key)
+                            {
+                                Console.WriteLine($"{item.Value.Name}{ac.AccNumber}");
+                            }
+                        }
+
+
                     }
                     
                 }
-                
             }
-            return returnDict;
+            return returnDictReverse;
         }
 
         //ВОЗВРАЩАЕТ IPerson С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА

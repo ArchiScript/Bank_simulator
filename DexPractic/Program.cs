@@ -163,7 +163,7 @@ namespace BankSystem
             }
             else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
 
-            /*var reverceDictFromFile = bankServ.GetDictFromFile();
+            var reverceDictFromFile = bankServ.GetDictFromFile();
             foreach (var pair in reverceDictFromFile)
             {
                 foreach (var acc in pair.Key)
@@ -171,15 +171,15 @@ namespace BankSystem
                     Console.WriteLine($"Это данные словаря из файла {pair.Value.Name} {pair.Value.PassNumber}" +
                         $" {acc.AccNumber} {acc.Balance} {acc.CurrencyType.Sign}");
                 }
-            }*/
-            var dictFromFile = bankServ.GetDictFromFile();
+            }
+            /*var dictFromFile = bankServ.GetDictFromFile();
             foreach (var pair in dictFromFile)
             {
-                foreach (var acc in pair.Value)
+                foreach (var acc in pair.Key)
                 {
-                    Console.WriteLine($"Это данные словаря из файла {pair.Key.Name} {pair.Key.PassNumber} {acc.AccNumber} {acc.Balance} {acc.CurrencyType.Sign}");
+                    Console.WriteLine($"Это данные словаря из файла {pair.Value.Name} {pair.Value.PassNumber} {acc.AccNumber} {acc.Balance} {acc.CurrencyType.Sign}");
                 }
-            }
+            }*/
         }
     }
 }
