@@ -172,7 +172,8 @@ namespace BankSystem.Services
                 {
                     dictAllData += $"{acc.AccNumber},{acc.Balance},{acc.CurrencyType.Sign};";
 
-                    dictAccountData += $"{acc.AccNumber},{acc.Balance},{acc.CurrencyType.Sign},{pair.Key.PassNumber}{br}";
+                    dictAccountData += $"{acc.AccNumber},{acc.Balance},{acc.CurrencyType.Sign}," +
+                        $"{pair.Key.PassNumber},{pair.Key.Name},{pair.Key.DateOfBirth},{pair.Key.Id}{br}";
                 }
                 dictAllData += $"{br}";
             }
@@ -304,19 +305,34 @@ namespace BankSystem.Services
                             cur = new USD();
                             break;
                     }
-                    testAccDict.Add(new Account
+                    testAccClDict.Add(new Account
                     {
                         AccNumber = (ulong)Convert.ToUInt64(props[0]),
                         Balance = Convert.ToDecimal(props[1]),
                         CurrencyType = cur
-                    }, props[3]);
+                    }, new Client {
+                        PassNumber = props[3], 
+                        Name = props[4], 
+                        DateOfBirth = props[5], 
+                        Id = Convert.ToInt32(props[6]) }
+                    );
                 }
+                
             }
             ////////////////////Совмещение аккаунтов и клиентов
-            foreach (var pair in testAccDict)
+            foreach (var pair in testAccClDict)
             {
-                Console.WriteLine($"{pair.Key.AccNumber} {pair.Key.Balance} {pair.Key.CurrencyType.Sign} {pair.Value}");
+
+                Console.WriteLine($"{pair.Value.Name} {pair.Value.PassNumber}" +
+                    $" {pair.Value.DateOfBirth} {pair.Value.Id} {pair.Key.AccNumber}" +
+                    $" {pair.Key.Balance} {pair.Key.CurrencyType.Sign}");
+
+                //returnDict
             }
+            var query =
+                from cl in testAccClDict
+                group cl by cl.Value.PassNumber;
+                
 
             ///////////////Чтение файла  и добавление акк и кл в словарь
 
@@ -326,29 +342,31 @@ namespace BankSystem.Services
                 fileStream.Read(array, 0, array.Length);
                 string readData = System.Text.Encoding.Default.GetString(array);
                 var pairsArr = readData.Split(br, trimSplit);
+                /*var currentCl = new Client();*/
                 var currentAccList = new List<Account>();
+
                 foreach (var pair in pairsArr)
                 {
                     var objs = pair.Split("/", trimSplit);
-                    var clProps = objs[0].Split(";", trimSplit);
 
                     ///Добавляем в клиента данные из файла
-                    var currentCl = new Client
-                    {
-                        Name = clProps[0],
-                        DateOfBirth = clProps[1],
-                        PassNumber = clProps[2],
-                        Id = Convert.ToInt32(clProps[3])
-                    };
 
+                    //Console.WriteLine($"---------------{objs[0]}");
+                        var clProps = objs[0].Split(";", trimSplit);
+                        var currentCl = new Client
+                        {
+                            Name = clProps[0],
+                            DateOfBirth = clProps[1],
+                            PassNumber = clProps[2],
+                            Id = Convert.ToInt32(clProps[3])
+                        };
+
+                    //Console.WriteLine("==============="+currentCl.Name);
                     var accs = objs[1].Split(";", trimSplit);
-                    
+
                     foreach (var acc in accs)
                     {
-
                         var accProps = acc.Split(",", trimSplit);
-
-                        Console.WriteLine($"-------{acc}  {accProps[0]} {accProps[1]} {accProps[2]}");
                         Currency cur;
                         switch (accProps[2])
                         {
@@ -371,18 +389,26 @@ namespace BankSystem.Services
                                 cur = new USD();
                                 break;
                         }
-
-                        
                         currentAccList.Add(new Account
                         {
                             AccNumber = (ulong)Convert.ToInt64(accProps[0]),
                             Balance = Convert.ToDecimal(accProps[1]),
                             CurrencyType = cur
                         });
-
-                       
+                        accountsDict.Add(currentAccList, currentCl);
+                        /*var currentAc = new Account
+                        {
+                            AccNumber = (ulong)Convert.ToInt64(accProps[0]),
+                            Balance = Convert.ToDecimal(accProps[1]),
+                            CurrencyType = cur
+                        };
+                        testAccClDict.Add(currentAc, currentCl);
+                        foreach (var item in testAccClDict)
+                        {
+                            Console.WriteLine(item.Key.AccNumber + item.Value.Name);
+                        }*/
                     }
-                    returnDict.Add(currentCl, currentAccList);
+                    
                 }
                 
             }
