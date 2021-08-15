@@ -330,7 +330,7 @@ namespace BankSystem.Services
             return fromFileClListAccDict;
         }
 
-        //ВОЗВРАЩАЕТ IPerson С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА
+        //ВОЗВРАЩАЕТ IPerson ИЗ ЛИСТА С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА
         public IPerson Find<T>(string passNumber) where T : IPerson
         {
             var findNameEmp =
@@ -352,7 +352,7 @@ namespace BankSystem.Services
         }
 
 
-        //ВОЗВРАЩАЕТ IPerson С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ ОБЪЕКТА
+        //ВОЗВРАЩАЕТ IPerson ИЗ ЛИСТА С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ ОБЪЕКТА
         public IPerson Find<T>(T person) where T : IPerson
         {
 
