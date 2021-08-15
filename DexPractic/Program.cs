@@ -121,9 +121,6 @@ namespace BankSystem
                     }
                 }
 
-
-
-
             }
             Console.WriteLine("\n");
 
@@ -163,6 +160,7 @@ namespace BankSystem
             }
             else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
 
+            //Вывести данные из файла
             var test = bankServ.GetDictFromFile();
             foreach (var pair in test)
             {
@@ -172,7 +170,6 @@ namespace BankSystem
                         $" {acc.AccNumber} {acc.Balance} {acc.CurrencyType.Sign}");
                 }
             }
-            
         }
     }
 }

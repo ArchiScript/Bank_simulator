@@ -52,13 +52,21 @@ namespace BankSystem.Services
                     {
                         throw new BankAdultException("Вы не достигли совершеннолетия");
                     }
-                    clients.Add(new Client
+                    if (!clients.Contains(client))
                     {
-                        Name = client.Name,
-                        PassNumber = client.PassNumber,
-                        DateOfBirth = client.DateOfBirth,
-                        Id = client.Id,
-                    });
+                        clients.Add(new Client
+                        {
+                            Name = client.Name,
+                            PassNumber = client.PassNumber,
+                            DateOfBirth = client.DateOfBirth,
+                            Id = client.Id,
+                        });
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Клиент {client} уже присутствует в базе");
+                    }
+
 
                 }
                 catch (BankAdultException e)
@@ -80,15 +88,23 @@ namespace BankSystem.Services
                     {
                         throw new BankAdultException("Вы не достигли совершеннолетия");
                     }
-                    employees.Add(new Employee
+                    if (!employees.Contains(employee))
                     {
-                        Name = employee.Name,
-                        PassNumber = employee.PassNumber,
-                        DateOfBirth = employee.DateOfBirth,
-                        DateOfEmployment = employee.DateOfEmployment,
-                        Position = employee.Position,
-                        Id = employee.Id
-                    });
+                        employees.Add(new Employee
+                        {
+                            Name = employee.Name,
+                            PassNumber = employee.PassNumber,
+                            DateOfBirth = employee.DateOfBirth,
+                            DateOfEmployment = employee.DateOfEmployment,
+                            Position = employee.Position,
+                            Id = employee.Id
+                        });
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Сотрудник {employee} уже присутствует в базе");
+                    }
+
                 }
                 catch (BankAdultException e)
                 {
@@ -129,7 +145,7 @@ namespace BankSystem.Services
         //ДОБАВЛЯЕТ В СЛОВАРЬ НОВЫЙ СЧЕТ КЛИЕНТУ, ИЛИ НОВОГО КЛИЕНТА И СЧЕТ, ------ПИШЕТ В ФАЙЛ
         public void AddClientAccount(Client client, Account account)
         {
-            if (clientsDict.Keys.Contains(client))
+            if (GetDictFromFile().Keys.Contains(client))
             {
                 Console.WriteLine($"Клиент {client.Name} уже есть в базе...добавляем счет");
                 var clDict = clientsDict[client];
@@ -166,39 +182,49 @@ namespace BankSystem.Services
                 }
                 dictAllData += $"{br}";
             }
-            string pathToClAcc = $@"{path}\Clients&Accounts.txt";
-            string pathToClient = $@"{path}\Clients.txt";
-            string pathToAccount = $@"{path}\Accounts.txt";
-            FileStream fstrmCl;
-            FileStream fstrmAc;
-            FileStream fstrmClAc;
+
+            string pathToClAcc = Path.Combine(path, "Clients&Accounts.txt");
+            string pathToClient = Path.Combine(path, "Clients.txt");
+            string pathToAccount = Path.Combine(path, "Accounts.txt");
+
             if (File.Exists(pathToClient) && File.Exists(pathToAccount) && File.Exists(pathToClAcc))
             {
-                fstrmCl = new FileStream(pathToClient, FileMode.Truncate);
-                fstrmAc = new FileStream(pathToAccount, FileMode.Truncate);
-                fstrmClAc = new FileStream(pathToClAcc, FileMode.Truncate);
+                using (FileStream fileStream = new FileStream(pathToClient, FileMode.Truncate))
+                {
+                    byte[] array = System.Text.Encoding.Default.GetBytes(dictClientData);
+                    fileStream.Write(array, 0, array.Length);
+                }
+                using (FileStream fileStream = new FileStream(pathToAccount, FileMode.Truncate))
+                {
+                    byte[] array = System.Text.Encoding.Default.GetBytes(dictAccountData);
+                    fileStream.Write(array, 0, array.Length);
+                }
+                using (FileStream fileStream = new FileStream(pathToClAcc, FileMode.Truncate))
+                {
+                    byte[] array = System.Text.Encoding.Default.GetBytes(dictAllData);
+                    fileStream.Write(array, 0, array.Length);
+                }
+
             }
             else
             {
-                fstrmCl = new FileStream(pathToClient, FileMode.Append);
-                fstrmAc = new FileStream(pathToAccount, FileMode.Append);
-                fstrmClAc = new FileStream(pathToClAcc, FileMode.Append);
+                using (FileStream fileStream = new FileStream(pathToClient, FileMode.Append))
+                {
+                    byte[] array = System.Text.Encoding.Default.GetBytes(dictClientData);
+                    fileStream.Write(array, 0, array.Length);
+                }
+                using (FileStream fileStream = new FileStream(pathToAccount, FileMode.Append))
+                {
+                    byte[] array = System.Text.Encoding.Default.GetBytes(dictAccountData);
+                    fileStream.Write(array, 0, array.Length);
+                }
+                using (FileStream fileStream = new FileStream(pathToClAcc, FileMode.Append))
+                {
+                    byte[] array = System.Text.Encoding.Default.GetBytes(dictAllData);
+                    fileStream.Write(array, 0, array.Length);
+                }
             }
-            using (FileStream fileStream = fstrmCl)
-            {
-                byte[] array = System.Text.Encoding.Default.GetBytes(dictClientData);
-                fileStream.Write(array, 0, array.Length);
-            }
-            using (FileStream fileStream = fstrmAc)
-            {
-                byte[] array = System.Text.Encoding.Default.GetBytes(dictAccountData);
-                fileStream.Write(array, 0, array.Length);
-            }
-            using (FileStream fileStream = fstrmClAc)
-            {
-                byte[] array = System.Text.Encoding.Default.GetBytes(dictAllData);
-                fileStream.Write(array, 0, array.Length);
-            }
+
 
         }
 
@@ -206,28 +232,29 @@ namespace BankSystem.Services
         //ВОЗВРАЩАЕТ КЛЮЧ-ЗНАЧЕНИЕ С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА --------- ИСТОЧНИК ДАННЫХ ИЗ ФАЙЛА
         public Dictionary<Client, List<Account>> FindFromDict(string passNumber)
         {
-            var findNameCl =
+            Dictionary<Client, List<Account>> newDic = new Dictionary<Client, List<Account>>();
+            if (!(GetDictFromFile().Count() == 0))
+            {
+                var findNameCl =
                      from client in GetDictFromFile()
                      where client.Key.PassNumber == passNumber
                      select client;
-
-            Dictionary<Client, List<Account>> newDic = new Dictionary<Client, List<Account>>();
-            foreach (var pair in findNameCl)
-            {
-                newDic.Add(pair.Key, pair.Value);
+                foreach (var pair in findNameCl)
+                {
+                    newDic.Add(pair.Key, pair.Value);
+                }
             }
+
             return newDic;
         }
 
 
-        //ВОЗВРАЩАЕТ СЛОВАРЬ С ДАННЫМИ ИЗ ФАЙЛА ---------- !!!
-        public Dictionary<Client, List<Account>> GetDictFromFile()
+        //ВОЗВРАЩАЕТ ЛИСТ КЛИЕНТОВ, СЧИТАННЫЙ -------- ИЗ ФАЙЛА
+        private List<Client> ClientFromFileToList()
         {
-            Dictionary<Client, List<Account>> fromFileClListAccDict = new Dictionary<Client, List<Account>>();
             List<Client> fromFileClList = new List<Client>();
-            Dictionary<Account, Client> fromFileAccClDict = new Dictionary<Account, Client>();
-
-            string path = $@"G:\C#Projects\DexPractic_Bank_System\BankSystemFiles";
+            string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
+            string pathToCl = Path.Combine(path, "Clients.txt");
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
             var br = Environment.NewLine;
             var trimSplit = StringSplitOptions.RemoveEmptyEntries;
@@ -235,23 +262,13 @@ namespace BankSystem.Services
             {
                 directoryInfo.Create();
             }
-            string pathToClAcc = $@"{path}\Clients&Accounts.txt";
-            string pathToCl = $@"{path}\Clients.txt";
-            string pathToAcc = $@"{path}\Accounts.txt";
-            if (!File.Exists(pathToClAcc))
-            {
-                File.Create(pathToClAcc);
-            }
-
-            //////////////Чтение файла и добавление КЛИЕНТА в лист
             using (FileStream fileStream = new FileStream(pathToCl, FileMode.Open))
             {
-
                 byte[] array = new byte[fileStream.Length];
                 fileStream.Read(array, 0, array.Length);
                 string readData = System.Text.Encoding.Default.GetString(array);
-                var ClArr = readData.Split(br, trimSplit);
-                foreach (var cl in ClArr)
+                var clArr = readData.Split(br, trimSplit);
+                foreach (var cl in clArr)
                 {
                     var properties = cl.Split(",", trimSplit);
                     fromFileClList.Add(new Client
@@ -263,16 +280,36 @@ namespace BankSystem.Services
                     });
                 }
             }
+            return fromFileClList;
+        }
 
-            //////////////Чтение файла и добавление  СЧЕТА в лист
+        //ВОЗВРАЩАЕТ СЛОВАРЬ С КЛЮЧОМ ВВИДЕ СЧЕТОВ -------- ИЗ ФАЙЛА
+        private Dictionary<Account, Client> AccountFromFileToDict()
+        {
+            Dictionary<Account, Client> fromFileAccClDict = new Dictionary<Account, Client>();
+
+            string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
+            DirectoryInfo directoryInfo = new DirectoryInfo(path);
+            var br = Environment.NewLine;
+            var trimSplit = StringSplitOptions.RemoveEmptyEntries;
+            if (!directoryInfo.Exists)
+            {
+                directoryInfo.Create();
+            }
+            string pathToAcc = Path.Combine(path, "Accounts.txt");
+            if (!File.Exists(pathToAcc))
+            {
+                File.Create(pathToAcc);
+            }
+
             using (FileStream fileStream = new FileStream(pathToAcc, FileMode.Open))
             {
                 byte[] array = new byte[fileStream.Length];
                 fileStream.Read(array, 0, array.Length);
                 string readData = System.Text.Encoding.Default.GetString(array);
-                var AccArr = readData.Split(br, trimSplit);
+                var accArr = readData.Split(br, trimSplit);
 
-                foreach (var acc in AccArr)
+                foreach (var acc in accArr)
                 {
                     var props = acc.Split(",", trimSplit);
                     Currency cur;
@@ -312,7 +349,28 @@ namespace BankSystem.Services
                     );
                 }
             }
-            ////////////////////Совмещение аккаунтов и клиентов
+            return fromFileAccClDict;
+        }
+
+
+        //ВОЗВРАЩАЕТ СЛОВАРЬ С ДАННЫМИ ---------------ИЗ ФАЙЛА 
+        public Dictionary<Client, List<Account>> GetDictFromFile()
+        {
+            Dictionary<Client, List<Account>> fromFileClListAccDict = new Dictionary<Client, List<Account>>();
+            string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
+            DirectoryInfo directoryInfo = new DirectoryInfo(path);
+
+            if (!directoryInfo.Exists)
+            {
+                directoryInfo.Create();
+            }
+            string pathToClAcc = Path.Combine(path, "Clients&Accounts.txt");
+            if (!File.Exists(pathToClAcc))
+            {
+                File.Create(pathToClAcc);
+            }
+            var fromFileClList = ClientFromFileToList();
+            var fromFileAccClDict = AccountFromFileToDict();
 
             foreach (var cl in fromFileClList)
             {
@@ -449,12 +507,18 @@ namespace BankSystem.Services
         //ВОЗВРАЩАЕТ КЛИЕНТА ПО НОМЕРУ ПАССПОРТА ИЗ СЛОВАРЯ---------ИСТОЧНИК ДАННЫХ ИЗ ФАЙЛА
         public Client GetClientFromDict(string passNumber)
         {
-            var findNameCl =
-                     from client in GetDictFromFile()
-                     where client.Key.PassNumber == passNumber
-                     select client;
+            try
+            {
+                return
+                   (from client in GetDictFromFile()
+                    where client.Key.PassNumber == passNumber
+                    select client).FirstOrDefault().Key;
+            }
+            catch (KeyNotFoundException)
+            {
+                throw;
+            }
 
-            return findNameCl.FirstOrDefault().Key;
         }
 
         //ПРОВЕРЯЕТ НА МИНИМАЛЬНЫЙ ДОПУСТИМЫЙ ВОЗРАСТ
