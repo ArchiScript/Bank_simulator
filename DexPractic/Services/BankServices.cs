@@ -203,11 +203,11 @@ namespace BankSystem.Services
         }
 
 
-        //ВОЗВРАЩАЕТ КЛЮЧ-ЗНАЧЕНИЕ С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА
+        //ВОЗВРАЩАЕТ КЛЮЧ-ЗНАЧЕНИЕ С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА --------- ИСТОЧНИК ДАННЫХ ИЗ ФАЙЛА
         public Dictionary<Client, List<Account>> FindFromDict(string passNumber)
         {
             var findNameCl =
-                     from client in clientsDict
+                     from client in GetDictFromFile()
                      where client.Key.PassNumber == passNumber
                      select client;
 
