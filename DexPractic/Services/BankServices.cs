@@ -24,6 +24,7 @@ namespace BankSystem.Services
         public static List<Client> testClList = new List<Client>();
         public static Dictionary<Account, string> testAccDict = new Dictionary<Account, string>();
         public static Dictionary<Account, Client> testAccClDict = new Dictionary<Account, Client>();
+        public static Dictionary<Client, List<Account>> testClientListAccDict = new Dictionary<Client, List<Account>>();
         //Определяем делегат
         public delegate decimal ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo);
 
@@ -232,7 +233,7 @@ namespace BankSystem.Services
 
 
         //ВОЗВРАЩАЕТ СЛОВАРЬ С ДАННЫМИ ИЗ ФАЙЛА
-        public Dictionary<List<Account>, Client> GetDictFromFile()
+        public Dictionary<Client,List<Account>> GetDictFromFile()
         {
             Dictionary<Client, List<Account>> returnDict = new Dictionary<Client, List<Account>>();
             Dictionary<List<Account>, Client> returnDictReverse = new Dictionary<List<Account>, Client>();
@@ -271,7 +272,10 @@ namespace BankSystem.Services
                     });
                 }
             }
-
+            foreach (var item in testClList)
+            {
+                Console.WriteLine("========+++" + item.Name);
+            }
             //////////////Чтение файла и добавление  СЧЕТА в лист
             using (FileStream fileStream = new FileStream(pathToAcc, FileMode.Open))
             {
@@ -330,12 +334,42 @@ namespace BankSystem.Services
                     $" {pair.Key.Balance} {pair.Key.CurrencyType.Sign}");
 
             }
-            var accGroup = from cl in testAccClDict.Values
+            List<Account> lac = new List<Account>();
+            foreach (var cl in testClList)
+            {
+                var findInAcc =
+                    from acc in testAccClDict
+                    where acc.Value.PassNumber == cl.PassNumber
+                    select new Account
+                    {
+                        AccNumber = acc.Key.AccNumber,
+                        Balance = acc.Key.Balance,
+                        CurrencyType = acc.Key.CurrencyType
+                    };
+
+
+                //var findInac = findInAcc.ToList();
+                /*foreach (var item in findInAcc)
+                {
+                    Console.WriteLine($"---{item.AccNumber} {item.Balance} {item.CurrencyType.Sign}");
+                }*/
+                testClientListAccDict.Add(cl, findInAcc.ToList());
+                //clientsDict.Add(cl, findInAcc.ToList());
+
+            }
+            foreach (var item in testClientListAccDict)
+            {
+                foreach (var acc in item.Value)
+                {
+                    Console.WriteLine($"---testClientListAccDict----{item.Key.Name} {acc.AccNumber} {acc.Balance} {acc.CurrencyType.Sign}");
+                }
+            }
+            /*var accGroup = from cl in testAccClDict.Values
                            group cl by cl.PassNumber into g
-                           select new List<Account>().Add(g);
+                           select new List<Account>().Add(g);*/
             ///////////////Чтение файла  и добавление акк и кл в словарь
 
-            using (FileStream fileStream = new FileStream(pathToClAcc, FileMode.Open))
+           /* using (FileStream fileStream = new FileStream(pathToClAcc, FileMode.Open))
             {
                 byte[] array = new byte[fileStream.Length];
                 fileStream.Read(array, 0, array.Length);
@@ -411,8 +445,8 @@ namespace BankSystem.Services
                     }
                     
                 }
-            }
-            return returnDictReverse;
+            }*/
+            return testClientListAccDict;
         }
 
         //ВОЗВРАЩАЕТ IPerson С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА
