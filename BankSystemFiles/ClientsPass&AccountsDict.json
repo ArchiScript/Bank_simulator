@@ -1,5 +1,5 @@
-[
-  {
+{
+  "1001": {
     "CurrencyType": {
       "Rate": 1.0,
       "Sign": "USD"
@@ -7,7 +7,7 @@
     "Balance": 731.0,
     "AccNumber": 1001
   },
-  {
+  "1025": {
     "CurrencyType": {
       "Rate": 17.8,
       "Sign": "MDL"
@@ -15,7 +15,7 @@
     "Balance": 895.0,
     "AccNumber": 1025
   },
-  {
+  "1002": {
     "CurrencyType": {
       "Rate": 1.0,
       "Sign": "USD"
@@ -23,7 +23,7 @@
     "Balance": 732.0,
     "AccNumber": 1002
   },
-  {
+  "1003": {
     "CurrencyType": {
       "Rate": 1.0,
       "Sign": "USD"
@@ -31,7 +31,7 @@
     "Balance": 733.0,
     "AccNumber": 1003
   },
-  {
+  "1004": {
     "CurrencyType": {
       "Rate": 1.0,
       "Sign": "USD"
@@ -39,7 +39,7 @@
     "Balance": 734.0,
     "AccNumber": 1004
   },
-  {
+  "1005": {
     "CurrencyType": {
       "Rate": 1.0,
       "Sign": "USD"
@@ -47,7 +47,7 @@
     "Balance": 735.0,
     "AccNumber": 1005
   },
-  {
+  "1013": {
     "CurrencyType": {
       "Rate": 26.8,
       "Sign": "UAH"
@@ -55,7 +55,7 @@
     "Balance": 945.0,
     "AccNumber": 1013
   },
-  {
+  "1012": {
     "CurrencyType": {
       "Rate": 16.3,
       "Sign": "RUB"
@@ -63,4 +63,4 @@
     "Balance": 675.0,
     "AccNumber": 1012
   }
-]
+}

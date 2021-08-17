@@ -17,11 +17,7 @@ namespace BankSystem.Services
         public static List<Client> clients = new List<Client>();
         public static List<Employee> employees = new List<Employee>();
         public static Dictionary<Client, List<Account>> clientsDict = new Dictionary<Client, List<Account>>();
-        // private string listClientData;
-        //private string listEmployeeData;
-        private string dictClientData;
-        private string dictAccountData;
-        private string dictAllData;
+        public static Dictionary<string, List<Account>> clPassAccDict = new Dictionary<string, List<Account>>();
 
 
         //Определяем делегат
@@ -144,7 +140,7 @@ namespace BankSystem.Services
                 var accNew = clientsDict[client];
                 accNew.Add(account);
             }
-
+            Console.WriteLine(clientsDict[client]);
             string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
             if (!directoryInfo.Exists)
@@ -154,22 +150,24 @@ namespace BankSystem.Services
 
             List<Account> accList = new List<Account>();
             List<Client> clList = new List<Client>();
+            Dictionary<ulong, Account> clPassAccDic = new Dictionary<ulong, Account>();
             foreach (var pair in clientsDict)
             {
                 clList.Add(pair.Key);
                 foreach (var acc in pair.Value)
                 {
+                    clPassAccDic.Add(acc.AccNumber, acc);
                     accList.Add(acc);
                 }
             }
 
-            string pathToClAccJson = Path.Combine(path, "Clients&AccountsDict.json");
+            string pathToClAccJson = Path.Combine(path, "ClientsPass&AccountsDict.json");
             string pathToClJson = Path.Combine(path, "Clients.json");
             string pathToAccJson = Path.Combine(path, "Accounts.json");
 
             string accListJson = JsonConvert.SerializeObject(accList, Formatting.Indented);
             string clListJson = JsonConvert.SerializeObject(clList, Formatting.Indented);
-            var clDictJson = JsonConvert.SerializeObject(clientsDict, Formatting.Indented);
+            var clDictJson = JsonConvert.SerializeObject(clPassAccDic, Formatting.Indented);
             File.WriteAllText(pathToClAccJson, clDictJson);
             File.WriteAllText(pathToAccJson, accListJson);
             File.WriteAllText(pathToClJson, clListJson);
@@ -181,10 +179,10 @@ namespace BankSystem.Services
         public Dictionary<Client, List<Account>> FindFromDict(string passNumber)
         {
             Dictionary<Client, List<Account>> newDic = new Dictionary<Client, List<Account>>();
-            if (!(GetDictFromFile().Count() == 0))
+            if (!(clientsDict.Count() == 0))
             {
                 var findNameCl =
-                     from client in GetDictFromFile()
+                     from client in clientsDict
                      where client.Key.PassNumber == passNumber
                      select client;
                 foreach (var pair in findNameCl)
@@ -216,8 +214,8 @@ namespace BankSystem.Services
             return fromFileClList;
         }
 
-        //ВОЗВРАЩАЕТ СЛОВАРЬ С КЛЮЧОМ ВВИДЕ СЧЕТОВ -------- ИЗ ФАЙЛА
-        private Dictionary<Account, Client> AccountFromFileToDict()
+        //ВОЗВРАЩАЕТ СЛОВАРЬ С КЛЮЧОМ ВВИДЕ номеров счета -------- ИЗ ФАЙЛА
+        private Dictionary<string, Account> AccountFromFileToDict()
         {
             //Dictionary<Account, Client> fromFileAccClDict = new Dictionary<Account, Client>();
 
@@ -230,14 +228,15 @@ namespace BankSystem.Services
             }
             string pathToAcc = Path.Combine(path, "Accounts.txt");
             string pathToAccJson = Path.Combine(path, "Accounts.json");
+            string pathToAccClDict = Path.Combine(path, "ClientsPass&AccountsDict.json");
             if (!File.Exists(pathToAcc))
             {
                 File.Create(pathToAcc);
             }
 
 
-            string jsonAccClDict = File.ReadAllText(pathToAccJson);
-            var fromFileAccClDict = JsonConvert.DeserializeObject<Dictionary<Account, Client>>(jsonAccClDict);
+            string jsonAccClDict = File.ReadAllText(pathToAccClDict);
+            var fromFileAccClDict = JsonConvert.DeserializeObject<Dictionary<string, Account>>(jsonAccClDict);
             return fromFileAccClDict;
         }
 
@@ -266,12 +265,12 @@ namespace BankSystem.Services
             {
                 var findInAcc =
                     from acc in fromFileAccClDict
-                    where acc.Value.PassNumber == cl.PassNumber
+                    where acc.Key == cl.PassNumber
                     select new Account
                     {
-                        AccNumber = acc.Key.AccNumber,
-                        Balance = acc.Key.Balance,
-                        CurrencyType = acc.Key.CurrencyType
+                        AccNumber = acc.Value.AccNumber,
+                        Balance = acc.Value.Balance,
+                        CurrencyType = acc.Value.CurrencyType
                     };
                 fromFileClListAccDict.Add(cl, findInAcc.ToList());
             }

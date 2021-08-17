@@ -145,8 +145,8 @@ namespace BankSystem
             if (accs.Count > 1)
             {
                 Console.WriteLine($" Счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign}  " +
-                    $" Счет {accs[2].AccNumber} {accs[2].Balance} {accs[2].CurrencyType.Sign} \n ");
-                bankServ.MoneyTransfer(120, accs[0], accs[2], exchangeHandler);
+                    $" Счет {accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign} \n ");
+                bankServ.MoneyTransfer(120, accs[0], accs[1], exchangeHandler);
                 Console.WriteLine("\n ");
             }
             else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
@@ -156,10 +156,10 @@ namespace BankSystem
             if (accs.Count > 1)
             {
                 Console.WriteLine($"Посредством обобщенного делегата Func: \n Счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign}  " +
-                    $" Счет {accs[2].AccNumber} {accs[2].Balance} {accs[2].CurrencyType.Sign} \n ");
+                    $" Счет {accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign} \n ");
 
                 //Передаем параметром метода func(то есть присвоенную CurrencyCoverter), 
-                bankServ.MoneyTransferFunc(400, accs[0], accs[2], funcExcDel);
+                bankServ.MoneyTransferFunc(400, accs[0], accs[1], funcExcDel);
             }
             else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
 
