@@ -2,6 +2,9 @@
 using BankSystem.Models;
 using BankSystem.Services;
 using System.Collections.Generic;
+using Newtonsoft;
+using Newtonsoft.Json;
+using System.IO;
 
 
 namespace BankSystem
@@ -13,10 +16,6 @@ namespace BankSystem
         {
 
             var bankServ = new BankServices();
-
-            var mins = new TimeSpan(0, 43, 0);
-            Console.WriteLine(mins);
-
 
             //Заполнение листа
             for (int i = 1; i <= 5; i++)
@@ -175,10 +174,15 @@ namespace BankSystem
                 }
             }
             Console.WriteLine("\n");
+            
             //Проверка пользовательского расширения для int,--- конвертация в TimeSpan
             Console.WriteLine("Конвертация числа в экземпляр класса TimeSpan: ");
             Console.WriteLine(1.Seconds() + 24.Minutes() + 4.Hours() - 13.Minutes());
 
+            var myPers = bankServ.Find<Client>("I-ПР012341");
+
+
+            
         }
     }
 }

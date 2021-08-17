@@ -6,6 +6,7 @@ using System.Linq;
 using BankSystem.Services;
 using BankSystem.Exceptions;
 using System.IO;
+using Newtonsoft;
 using Newtonsoft.Json;
 
 
@@ -22,6 +23,7 @@ namespace BankSystem.Services
         private string dictAccountData;
         private string dictAllData;
 
+
         //Определяем делегат
         public delegate decimal ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo);
 
@@ -31,7 +33,7 @@ namespace BankSystem.Services
         public Func<decimal, Currency, Currency, decimal> funcExc;
 
 
-        //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ, ПРОВЕРЯЕТ НА ВОЗРАСТ, ------ПИШЕТ В ФАЙЛ
+        //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ, ПРОВЕРЯЕТ НА ВОЗРАСТ, ------ПИШЕТ В ФАЙЛ (JSON)
         public void Add<T>(T person) where T : Person
         {
             //D:\WEBDEV\Dex_Practic
@@ -67,8 +69,6 @@ namespace BankSystem.Services
                     {
                         Console.WriteLine($"Клиент {client} уже присутствует в базе");
                     }
-
-
                 }
                 catch (BankAdultException e)
                 {
@@ -105,7 +105,6 @@ namespace BankSystem.Services
                     {
                         Console.WriteLine($"Сотрудник {employee} уже присутствует в базе");
                     }
-
                 }
                 catch (BankAdultException e)
                 {
@@ -116,29 +115,18 @@ namespace BankSystem.Services
                     Console.WriteLine($"Перехвачено исключение {e.Message}");
                 }
             }
-            listClientData = "";
-            listEmployeeData = "";
-            foreach (var client in clients)
-            {
-                using (FileStream fileStream = new FileStream($"{path}\\Clients&Employees.txt", FileMode.Truncate))
-                {
-                    listClientData += $"Клиент,{client.Name},{client.PassNumber},{client.DateOfBirth},{Convert.ToString(client.Id)}{Environment.NewLine}";
-                    byte[] array = System.Text.Encoding.Default.GetBytes(listClientData);
-                    fileStream.Write(array, 0, array.Length);
-                }
-            }
 
-            foreach (var emp in employees)
-            {
-                using (FileStream fileStream1 = new FileStream($"{path}\\Clients&Employees.txt", FileMode.Append))
-                {
-                    listEmployeeData += $"Сотрудник,{emp.Name},{emp.PassNumber}," +
-                        $"{emp.DateOfBirth},{emp.DateOfEmployment}," +
-                        $"{emp.Position},{Convert.ToString(emp.Id)}{Environment.NewLine}";
-                    byte[] array = System.Text.Encoding.Default.GetBytes(listEmployeeData);
-                    fileStream1.Write(array, 0, array.Length);
-                }
-            }
+            //var pathTxtFile = $"{path}\\Clients&Employees.txt";
+            var pathJsonCl = $"{path}\\Clients.json";
+            var pathJsonEmp = $"{path}\\Employees.json";
+
+            string jsonClList = JsonConvert.SerializeObject(clients, Formatting.Indented);
+            string jsonEmpList = JsonConvert.SerializeObject(employees, Formatting.Indented);
+            File.WriteAllText(pathJsonCl, jsonClList);
+            File.WriteAllText(pathJsonEmp, jsonEmpList);
+
+            var objJsonCls = JsonConvert.DeserializeObject<List<Client>>(File.ReadAllText(pathJsonCl));
+            var objJsonEmps = JsonConvert.DeserializeObject<List<Employee>>(File.ReadAllText(pathJsonEmp));
 
         }
 
