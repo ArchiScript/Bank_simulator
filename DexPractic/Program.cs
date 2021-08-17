@@ -3,6 +3,7 @@ using BankSystem.Models;
 using BankSystem.Services;
 using System.Collections.Generic;
 
+
 namespace BankSystem
 {
     public class Program
@@ -11,8 +12,11 @@ namespace BankSystem
         static void Main(string[] args)
         {
 
-
             var bankServ = new BankServices();
+
+            var mins = new TimeSpan(0, 43, 0);
+            Console.WriteLine(mins);
+
 
             //Заполнение листа
             for (int i = 1; i <= 5; i++)
@@ -167,9 +171,14 @@ namespace BankSystem
                 foreach (var acc in pair.Value)
                 {
                     Console.WriteLine($"Это данные словаря из файла {pair.Key.Name} {pair.Key.PassNumber}" +
-                        $" {acc.AccNumber} {acc.Balance} {acc.CurrencyType.Sign}");
+                        $" {acc.AccNumber} {acc.Balance} {acc.CurrencyType.Sign} ");
                 }
             }
+            Console.WriteLine("\n");
+            //Проверка пользовательского расширения для int,--- конвертация в TimeSpan
+            Console.WriteLine("Конвертация числа в экземпляр класса TimeSpan: ");
+            Console.WriteLine(1.Seconds() + 24.Minutes() + 4.Hours() - 13.Minutes());
+
         }
     }
 }
