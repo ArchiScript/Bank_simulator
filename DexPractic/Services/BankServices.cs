@@ -139,8 +139,12 @@ namespace BankSystem.Services
                 clientsDict.Add(client, new List<Account>());
                 var accNew = clientsDict[client];
                 accNew.Add(account);
+                foreach (var item in accNew)
+                {
+                    Console.WriteLine(item.AccNumber);
+                }
             }
-            Console.WriteLine(clientsDict[client]);
+            
             string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
             if (!directoryInfo.Exists)
@@ -273,6 +277,13 @@ namespace BankSystem.Services
                         CurrencyType = acc.Value.CurrencyType
                     };
                 fromFileClListAccDict.Add(cl, findInAcc.ToList());
+                foreach (var item in fromFileClListAccDict)
+                {
+                    foreach (var ac in item.Value)
+                    {
+                        Console.WriteLine($"--------------{item.Key.PassNumber}  {ac.AccNumber}{ac.Balance}");
+                    }
+                }
             }
             return fromFileClListAccDict;
         }
@@ -399,7 +410,7 @@ namespace BankSystem.Services
             try
             {
                 return
-                   (from client in GetDictFromFile()
+                   (from client in clientsDict
                     where client.Key.PassNumber == passNumber
                     select client).FirstOrDefault().Key;
             }

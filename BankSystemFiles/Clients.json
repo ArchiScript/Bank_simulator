@@ -3,37 +3,31 @@
     "Id": 1,
     "Name": "Имя11 Фамилия11 Отчество11",
     "PassNumber": "I-ПР012341",
-    "DateOfBirth": "20.7.1956"
+    "DateOfBirth": "18.9.1987"
   },
   {
     "Id": 2,
     "Name": "Имя12 Фамилия12 Отчество12",
     "PassNumber": "I-ПР012342",
-    "DateOfBirth": "17.4.1957"
+    "DateOfBirth": "7.7.2001"
   },
   {
     "Id": 3,
     "Name": "Имя13 Фамилия13 Отчество13",
     "PassNumber": "I-ПР012343",
-    "DateOfBirth": "6.8.1993"
+    "DateOfBirth": "1.9.1994"
   },
   {
     "Id": 4,
     "Name": "Имя14 Фамилия14 Отчество14",
     "PassNumber": "I-ПР012344",
-    "DateOfBirth": "5.6.1974"
+    "DateOfBirth": "20.10.1968"
   },
   {
     "Id": 5,
     "Name": "Имя15 Фамилия15 Отчество15",
     "PassNumber": "I-ПР012345",
-    "DateOfBirth": "9.3.1992"
-  },
-  {
-    "Id": 1,
-    "Name": "Имя1 Фамилия1 Отчество1",
-    "PassNumber": "I-ПР012341",
-    "DateOfBirth": "2.5.1955"
+    "DateOfBirth": "19.9.1986"
   },
   {
     "Id": 21,

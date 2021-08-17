@@ -9,6 +9,14 @@
   },
   {
     "CurrencyType": {
+      "Rate": 26.8,
+      "Sign": "UAH"
+    },
+    "Balance": 945.0,
+    "AccNumber": 1013
+  },
+  {
+    "CurrencyType": {
       "Rate": 17.8,
       "Sign": "MDL"
     },
@@ -46,14 +54,6 @@
     },
     "Balance": 735.0,
     "AccNumber": 1005
-  },
-  {
-    "CurrencyType": {
-      "Rate": 26.8,
-      "Sign": "UAH"
-    },
-    "Balance": 945.0,
-    "AccNumber": 1013
   },
   {
     "CurrencyType": {
