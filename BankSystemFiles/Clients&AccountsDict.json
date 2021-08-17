@@ -1,0 +1,52 @@
+{
+  "BankSystem.Models.Client": [
+    {
+      "CurrencyType": {
+        "Rate": 1.0,
+        "Sign": "USD"
+      },
+      "Balance": 731.0,
+      "AccNumber": 1001
+    }
+  ],
+  "BankSystem.Models.Client": [
+    {
+      "CurrencyType": {
+        "Rate": 1.0,
+        "Sign": "USD"
+      },
+      "Balance": 732.0,
+      "AccNumber": 1002
+    }
+  ],
+  "BankSystem.Models.Client": [
+    {
+      "CurrencyType": {
+        "Rate": 1.0,
+        "Sign": "USD"
+      },
+      "Balance": 733.0,
+      "AccNumber": 1003
+    }
+  ],
+  "BankSystem.Models.Client": [
+    {
+      "CurrencyType": {
+        "Rate": 1.0,
+        "Sign": "USD"
+      },
+      "Balance": 734.0,
+      "AccNumber": 1004
+    }
+  ],
+  "BankSystem.Models.Client": [
+    {
+      "CurrencyType": {
+        "Rate": 1.0,
+        "Sign": "USD"
+      },
+      "Balance": 735.0,
+      "AccNumber": 1005
+    }
+  ]
+}

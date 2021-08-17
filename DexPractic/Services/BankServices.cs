@@ -17,8 +17,8 @@ namespace BankSystem.Services
         public static List<Client> clients = new List<Client>();
         public static List<Employee> employees = new List<Employee>();
         public static Dictionary<Client, List<Account>> clientsDict = new Dictionary<Client, List<Account>>();
-        private string listClientData;
-        private string listEmployeeData;
+        // private string listClientData;
+        //private string listEmployeeData;
         private string dictClientData;
         private string dictAccountData;
         private string dictAllData;
@@ -125,16 +125,13 @@ namespace BankSystem.Services
             File.WriteAllText(pathJsonCl, jsonClList);
             File.WriteAllText(pathJsonEmp, jsonEmpList);
 
-            var objJsonCls = JsonConvert.DeserializeObject<List<Client>>(File.ReadAllText(pathJsonCl));
-            var objJsonEmps = JsonConvert.DeserializeObject<List<Employee>>(File.ReadAllText(pathJsonEmp));
-
         }
 
 
         //ДОБАВЛЯЕТ В СЛОВАРЬ НОВЫЙ СЧЕТ КЛИЕНТУ, ИЛИ НОВОГО КЛИЕНТА И СЧЕТ, ------ПИШЕТ В ФАЙЛ
         public void AddClientAccount(Client client, Account account)
         {
-            if (GetDictFromFile().Keys.Contains(client))
+            if (!(clientsDict.Count == 0) && clientsDict.Keys.Contains(client))
             {
                 Console.WriteLine($"Клиент {client.Name} уже есть в базе...добавляем счет");
                 var clDict = clientsDict[client];
@@ -154,66 +151,28 @@ namespace BankSystem.Services
             {
                 directoryInfo.Create();
             }
-            dictClientData = "";
-            dictAccountData = "";
-            dictAllData = "";
-            var br = Environment.NewLine;
+
+            List<Account> accList = new List<Account>();
+            List<Client> clList = new List<Client>();
             foreach (var pair in clientsDict)
             {
-                dictAllData += $"{pair.Key.Name};{pair.Key.PassNumber};{pair.Key.DateOfBirth};{pair.Key.Id}/";
-                dictClientData += $"{pair.Key.Name},{pair.Key.PassNumber},{pair.Key.DateOfBirth},{pair.Key.Id}{br}";
+                clList.Add(pair.Key);
                 foreach (var acc in pair.Value)
                 {
-                    dictAllData += $"{acc.AccNumber},{acc.Balance},{acc.CurrencyType.Sign};";
-
-                    dictAccountData += $"{acc.AccNumber},{acc.Balance},{acc.CurrencyType.Sign}," +
-                        $"{pair.Key.PassNumber},{pair.Key.Name},{pair.Key.DateOfBirth},{pair.Key.Id}{br}";
-                }
-                dictAllData += $"{br}";
-            }
-
-            string pathToClAcc = Path.Combine(path, "Clients&Accounts.txt");
-            string pathToClient = Path.Combine(path, "Clients.txt");
-            string pathToAccount = Path.Combine(path, "Accounts.txt");
-
-            if (File.Exists(pathToClient) && File.Exists(pathToAccount) && File.Exists(pathToClAcc))
-            {
-                using (FileStream fileStream = new FileStream(pathToClient, FileMode.Truncate))
-                {
-                    byte[] array = System.Text.Encoding.Default.GetBytes(dictClientData);
-                    fileStream.Write(array, 0, array.Length);
-                }
-                using (FileStream fileStream = new FileStream(pathToAccount, FileMode.Truncate))
-                {
-                    byte[] array = System.Text.Encoding.Default.GetBytes(dictAccountData);
-                    fileStream.Write(array, 0, array.Length);
-                }
-                using (FileStream fileStream = new FileStream(pathToClAcc, FileMode.Truncate))
-                {
-                    byte[] array = System.Text.Encoding.Default.GetBytes(dictAllData);
-                    fileStream.Write(array, 0, array.Length);
-                }
-
-            }
-            else
-            {
-                using (FileStream fileStream = new FileStream(pathToClient, FileMode.Append))
-                {
-                    byte[] array = System.Text.Encoding.Default.GetBytes(dictClientData);
-                    fileStream.Write(array, 0, array.Length);
-                }
-                using (FileStream fileStream = new FileStream(pathToAccount, FileMode.Append))
-                {
-                    byte[] array = System.Text.Encoding.Default.GetBytes(dictAccountData);
-                    fileStream.Write(array, 0, array.Length);
-                }
-                using (FileStream fileStream = new FileStream(pathToClAcc, FileMode.Append))
-                {
-                    byte[] array = System.Text.Encoding.Default.GetBytes(dictAllData);
-                    fileStream.Write(array, 0, array.Length);
+                    accList.Add(acc);
                 }
             }
 
+            string pathToClAccJson = Path.Combine(path, "Clients&AccountsDict.json");
+            string pathToClJson = Path.Combine(path, "Clients.json");
+            string pathToAccJson = Path.Combine(path, "Accounts.json");
+
+            string accListJson = JsonConvert.SerializeObject(accList, Formatting.Indented);
+            string clListJson = JsonConvert.SerializeObject(clList, Formatting.Indented);
+            var clDictJson = JsonConvert.SerializeObject(clientsDict, Formatting.Indented);
+            File.WriteAllText(pathToClAccJson, clDictJson);
+            File.WriteAllText(pathToAccJson, accListJson);
+            File.WriteAllText(pathToClJson, clListJson);
 
         }
 
@@ -241,103 +200,44 @@ namespace BankSystem.Services
         //ВОЗВРАЩАЕТ ЛИСТ КЛИЕНТОВ, СЧИТАННЫЙ -------- ИЗ ФАЙЛА
         private List<Client> ClientFromFileToList()
         {
-            List<Client> fromFileClList = new List<Client>();
+            //List<Client> fromFileClList = new List<Client>();
             string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
             string pathToCl = Path.Combine(path, "Clients.txt");
+            string pathToClJson = Path.Combine(path, "Clients.json");
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
-            var br = Environment.NewLine;
-            var trimSplit = StringSplitOptions.RemoveEmptyEntries;
+
             if (!directoryInfo.Exists)
             {
                 directoryInfo.Create();
             }
-            using (FileStream fileStream = new FileStream(pathToCl, FileMode.Open))
-            {
-                byte[] array = new byte[fileStream.Length];
-                fileStream.Read(array, 0, array.Length);
-                string readData = System.Text.Encoding.Default.GetString(array);
-                var clArr = readData.Split(br, trimSplit);
-                foreach (var cl in clArr)
-                {
-                    var properties = cl.Split(",", trimSplit);
-                    fromFileClList.Add(new Client
-                    {
-                        Name = properties[0],
-                        PassNumber = properties[1],
-                        DateOfBirth = properties[2],
-                        Id = Convert.ToInt32(properties[3])
-                    });
-                }
-            }
+
+            string jsonClList = File.ReadAllText(pathToClJson);
+            List<Client> fromFileClList = JsonConvert.DeserializeObject<List<Client>>(jsonClList);
             return fromFileClList;
         }
 
         //ВОЗВРАЩАЕТ СЛОВАРЬ С КЛЮЧОМ ВВИДЕ СЧЕТОВ -------- ИЗ ФАЙЛА
         private Dictionary<Account, Client> AccountFromFileToDict()
         {
-            Dictionary<Account, Client> fromFileAccClDict = new Dictionary<Account, Client>();
+            //Dictionary<Account, Client> fromFileAccClDict = new Dictionary<Account, Client>();
 
             string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
-            var br = Environment.NewLine;
-            var trimSplit = StringSplitOptions.RemoveEmptyEntries;
+
             if (!directoryInfo.Exists)
             {
                 directoryInfo.Create();
             }
             string pathToAcc = Path.Combine(path, "Accounts.txt");
+            string pathToAccJson = Path.Combine(path, "Accounts.json");
             if (!File.Exists(pathToAcc))
             {
                 File.Create(pathToAcc);
             }
 
-            using (FileStream fileStream = new FileStream(pathToAcc, FileMode.Open))
-            {
-                byte[] array = new byte[fileStream.Length];
-                fileStream.Read(array, 0, array.Length);
-                string readData = System.Text.Encoding.Default.GetString(array);
-                var accArr = readData.Split(br, trimSplit);
 
-                foreach (var acc in accArr)
-                {
-                    var props = acc.Split(",", trimSplit);
-                    Currency cur;
-                    switch (props[2])
-                    {
-                        case "USD":
-                            cur = new USD();
-                            break;
-                        case "UAH":
-                            cur = new UAH();
-                            break;
-                        case "EUR":
-                            cur = new EUR();
-                            break;
-                        case "MDL":
-                            cur = new MDL();
-                            break;
-                        case "RUB":
-                            cur = new RUB();
-                            break;
-                        default:
-                            cur = new USD();
-                            break;
-                    }
-                    fromFileAccClDict.Add(new Account
-                    {
-                        AccNumber = (ulong)Convert.ToUInt64(props[0]),
-                        Balance = Convert.ToDecimal(props[1]),
-                        CurrencyType = cur
-                    }, new Client
-                    {
-                        PassNumber = props[3],
-                        Name = props[4],
-                        DateOfBirth = props[5],
-                        Id = Convert.ToInt32(props[6])
-                    }
-                    );
-                }
-            }
+            string jsonAccClDict = File.ReadAllText(pathToAccJson);
+            var fromFileAccClDict = JsonConvert.DeserializeObject<Dictionary<Account, Client>>(jsonAccClDict);
             return fromFileAccClDict;
         }
 
@@ -354,6 +254,7 @@ namespace BankSystem.Services
                 directoryInfo.Create();
             }
             string pathToClAcc = Path.Combine(path, "Clients&Accounts.txt");
+            string pathToClAccJson = Path.Combine(path, "Clients&Accounts.json");
             if (!File.Exists(pathToClAcc))
             {
                 File.Create(pathToClAcc);
