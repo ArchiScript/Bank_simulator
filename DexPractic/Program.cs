@@ -167,14 +167,15 @@ namespace BankSystem
             var test = bankServ.GetDictFromFile();
             foreach (var pair in test)
             {
+                Console.WriteLine($"Это данные словаря из файла  {pair.Key.Name} {pair.Key.PassNumber}");
                 foreach (var acc in pair.Value)
                 {
-                    Console.WriteLine($"Это данные словаря из файла {pair.Key.Name} {pair.Key.PassNumber}" +
+                    Console.WriteLine($"----счет----" +
                         $" {acc.AccNumber} {acc.Balance} {acc.CurrencyType.Sign} ");
                 }
             }
             Console.WriteLine("\n");
-            
+
             //Проверка пользовательского расширения для int,--- конвертация в TimeSpan
             Console.WriteLine("Конвертация числа в экземпляр класса TimeSpan: ");
             Console.WriteLine(1.Seconds() + 24.Minutes() + 4.Hours() - 13.Minutes());

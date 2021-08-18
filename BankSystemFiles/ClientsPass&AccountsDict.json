@@ -1,66 +1,78 @@
 {
-  "1001": {
-    "CurrencyType": {
-      "Rate": 1.0,
-      "Sign": "USD"
+  "I-ПР012341": [
+    {
+      "CurrencyType": {
+        "Rate": 1.0,
+        "Sign": "USD"
+      },
+      "Balance": 731.0,
+      "AccNumber": 1001
     },
-    "Balance": 731.0,
-    "AccNumber": 1001
-  },
-  "1013": {
-    "CurrencyType": {
-      "Rate": 26.8,
-      "Sign": "UAH"
+    {
+      "CurrencyType": {
+        "Rate": 26.8,
+        "Sign": "UAH"
+      },
+      "Balance": 945.0,
+      "AccNumber": 1013
     },
-    "Balance": 945.0,
-    "AccNumber": 1013
-  },
-  "1025": {
-    "CurrencyType": {
-      "Rate": 17.8,
-      "Sign": "MDL"
-    },
-    "Balance": 895.0,
-    "AccNumber": 1025
-  },
-  "1002": {
-    "CurrencyType": {
-      "Rate": 1.0,
-      "Sign": "USD"
-    },
-    "Balance": 732.0,
-    "AccNumber": 1002
-  },
-  "1003": {
-    "CurrencyType": {
-      "Rate": 1.0,
-      "Sign": "USD"
-    },
-    "Balance": 733.0,
-    "AccNumber": 1003
-  },
-  "1004": {
-    "CurrencyType": {
-      "Rate": 1.0,
-      "Sign": "USD"
-    },
-    "Balance": 734.0,
-    "AccNumber": 1004
-  },
-  "1005": {
-    "CurrencyType": {
-      "Rate": 1.0,
-      "Sign": "USD"
-    },
-    "Balance": 735.0,
-    "AccNumber": 1005
-  },
-  "1012": {
-    "CurrencyType": {
-      "Rate": 16.3,
-      "Sign": "RUB"
-    },
-    "Balance": 675.0,
-    "AccNumber": 1012
-  }
+    {
+      "CurrencyType": {
+        "Rate": 17.8,
+        "Sign": "MDL"
+      },
+      "Balance": 895.0,
+      "AccNumber": 1025
+    }
+  ],
+  "I-ПР012342": [
+    {
+      "CurrencyType": {
+        "Rate": 1.0,
+        "Sign": "USD"
+      },
+      "Balance": 732.0,
+      "AccNumber": 1002
+    }
+  ],
+  "I-ПР012343": [
+    {
+      "CurrencyType": {
+        "Rate": 1.0,
+        "Sign": "USD"
+      },
+      "Balance": 733.0,
+      "AccNumber": 1003
+    }
+  ],
+  "I-ПР012344": [
+    {
+      "CurrencyType": {
+        "Rate": 1.0,
+        "Sign": "USD"
+      },
+      "Balance": 734.0,
+      "AccNumber": 1004
+    }
+  ],
+  "I-ПР012345": [
+    {
+      "CurrencyType": {
+        "Rate": 1.0,
+        "Sign": "USD"
+      },
+      "Balance": 735.0,
+      "AccNumber": 1005
+    }
+  ],
+  "I-ПР012883": [
+    {
+      "CurrencyType": {
+        "Rate": 16.3,
+        "Sign": "RUB"
+      },
+      "Balance": 675.0,
+      "AccNumber": 1012
+    }
+  ]
 }
