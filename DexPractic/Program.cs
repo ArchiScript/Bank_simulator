@@ -182,8 +182,11 @@ namespace BankSystem
 
             var myPers = bankServ.Find<Client>("I-ПР012341");
 
+            Type myType = typeof(Client);
+            var myProperties = myType.GetProperties();
+            var myMethods = myType.GetMethods();
 
-            
+
         }
     }
 }
