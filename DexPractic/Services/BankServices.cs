@@ -140,6 +140,7 @@ namespace BankSystem.Services
         //ДОБАВЛЯЕТ В СЛОВАРЬ НОВЫЙ СЧЕТ КЛИЕНТУ, ИЛИ НОВОГО КЛИЕНТА И СЧЕТ, ------ПИШЕТ В ФАЙЛ (JSON)
         public void AddClientAccount(Client client, Account account)
         {
+            
             if (!(clientsDict.Count == 0) && clientsDict.Keys.Contains(client))
             {
                 Console.WriteLine($"Клиент {client.Name} уже есть в базе...добавляем счет");
@@ -157,14 +158,20 @@ namespace BankSystem.Services
                     Console.WriteLine(item.AccNumber);
                 }
             }
+            WriteClientAccountToFile();
 
+        }
+
+
+        // ПИШЕТ СЧЕТА И КЛИЕНТОВ В ФАЙЛ (JSON)
+        public void WriteClientAccountToFile()
+        {
             string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
             if (!directoryInfo.Exists)
             {
                 directoryInfo.Create();
             }
-
             List<Account> accsAllList = new List<Account>();
             List<Client> clList = new List<Client>();
             Dictionary<string, List<Account>> clPassAccDic = new Dictionary<string, List<Account>>();
@@ -197,18 +204,18 @@ namespace BankSystem.Services
             File.WriteAllText(pathToClAccJson, clDictJson);
             File.WriteAllText(pathToAccJson, accListJson);
             File.WriteAllText(pathToClJson, clListJson);
-
         }
+
 
 
         //ВОЗВРАЩАЕТ КЛЮЧ-ЗНАЧЕНИЕ С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА --------- ИСТОЧНИК ДАННЫХ ИЗ ФАЙЛА (JSON)
         public Dictionary<Client, List<Account>> FindFromDict(string passNumber)
         {
             Dictionary<Client, List<Account>> newDic = new Dictionary<Client, List<Account>>();
-            if (!(GetDictFromFile().Count() == 0))
+            if (!(GetDictFromFile().Count == 0))
             {
                 var findNameCl =
-                     from client in GetDictFromFile()
+                     from client in clientsDict
                      where client.Key.PassNumber == passNumber
                      select client;
                 foreach (var pair in findNameCl)
@@ -295,31 +302,34 @@ namespace BankSystem.Services
                         fromFileClListAccDict.Add(cl, pair.Value);
                     }
                 }
-
             }
-
             return fromFileClListAccDict;
         }
 
         //ВОЗВРАЩАЕТ IPerson ИЗ ЛИСТА С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА
         public IPerson Find<T>(string passNumber) where T : IPerson
         {
-            var findNameEmp =
-           from employee in employees
-           where employee.PassNumber == passNumber
-           select employee;
-            if (findNameEmp.Count() == 0)
+            IPerson person = null;
+            if (employees.Count != 0 && clients.Count != 0)
             {
-                var findNameCl =
-                    from client in clients
-                    where client.PassNumber == passNumber
-                    select client;
-                return findNameCl.FirstOrDefault();
-            }
-            else
-            {
-                return findNameEmp.FirstOrDefault();
-            }
+                var findNameEmp =
+            from employee in employees
+            where employee.PassNumber == passNumber
+            select employee;
+                if (findNameEmp.Count() == 0)
+                {
+                    var findNameCl =
+                        from client in clients
+                        where client.PassNumber == passNumber
+                        select client;
+                    return findNameCl.FirstOrDefault();
+                }
+                else
+                {
+                    return findNameEmp.FirstOrDefault();
+                }
+            }else { return person; }
+
         }
 
 
