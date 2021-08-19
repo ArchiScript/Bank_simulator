@@ -29,6 +29,83 @@ namespace BankSystem.Services
         public Func<decimal, Currency, Currency, decimal> funcExc;
 
 
+
+        //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ ЕСЛИ КЛИЕНТ
+        private void IfEmployeeAdd<T>(T person) where T : Person
+        {
+            var employee = person as Employee;
+            try
+            {
+                bool ageAllowed = IsAgeAllowed(18, DateTime.Parse(employee.DateOfBirth));
+                if (!ageAllowed)
+                {
+                    throw new BankAdultException("Вы не достигли совершеннолетия");
+                }
+                if (!employees.Contains(employee))
+                {
+                    employees.Add(new Employee
+                    {
+                        Name = employee.Name,
+                        PassNumber = employee.PassNumber,
+                        DateOfBirth = employee.DateOfBirth,
+                        DateOfEmployment = employee.DateOfEmployment,
+                        Position = employee.Position,
+                        Id = employee.Id
+                    });
+                }
+                else
+                {
+                    Console.WriteLine($"Сотрудник {employee} уже присутствует в базе");
+                }
+            }
+            catch (BankAdultException e)
+            {
+                Console.WriteLine($"Возникла ошибка доступа по возрасту {e}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Перехвачено исключение {e.Message}");
+            }
+        }
+
+
+        //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ ЕСЛИ СОТРУДНИК
+        private void IfClientAdd<T>(T person) where T : Person
+        {
+            var client = person as Client;
+            try
+            {
+                bool ageAllowed = IsAgeAllowed(18, DateTime.Parse(client.DateOfBirth));
+                if (!ageAllowed)
+                {
+                    throw new BankAdultException("Вы не достигли совершеннолетия");
+                }
+                if (!(clients.Count() == 0) && !clients.Contains(client))
+                {
+                    clients.Add(new Client
+                    {
+                        Name = client.Name,
+                        PassNumber = client.PassNumber,
+                        DateOfBirth = client.DateOfBirth,
+                        Id = client.Id,
+                    });
+                }
+                else
+                {
+                    Console.WriteLine($"Клиент {client} уже присутствует в базе");
+                }
+            }
+            catch (BankAdultException e)
+            {
+                Console.WriteLine($"Возникла ошибка доступа по возрасту {e}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Перехвачено исключение {e.Message}");
+            }
+        }
+
+
         //ДОБАВЛЯЕТ В ЛИСТ ПЕРСОНУ, ПРОВЕРЯЕТ НА ВОЗРАСТ, ------ПИШЕТ В ФАЙЛ (JSON)
         public void Add<T>(T person) where T : Person
         {
@@ -43,75 +120,12 @@ namespace BankSystem.Services
             }
             if (person is Client)
             {
-                var client = person as Client;
-                try
-                {
-                    bool ageAllowed = IsAgeAllowed(18, DateTime.Parse(client.DateOfBirth));
-                    if (!ageAllowed)
-                    {
-                        throw new BankAdultException("Вы не достигли совершеннолетия");
-                    }
-                    if (!clients.Contains(client))
-                    {
-                        clients.Add(new Client
-                        {
-                            Name = client.Name,
-                            PassNumber = client.PassNumber,
-                            DateOfBirth = client.DateOfBirth,
-                            Id = client.Id,
-                        });
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Клиент {client} уже присутствует в базе");
-                    }
-                }
-                catch (BankAdultException e)
-                {
-                    Console.WriteLine($"Возникла ошибка доступа по возрасту {e}");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Перехвачено исключение {e.Message}");
-                }
+                IfClientAdd(person);
             }
             else
             {
-                var employee = person as Employee;
-                try
-                {
-                    bool ageAllowed = IsAgeAllowed(18, DateTime.Parse(employee.DateOfBirth));
-                    if (!ageAllowed)
-                    {
-                        throw new BankAdultException("Вы не достигли совершеннолетия");
-                    }
-                    if (!employees.Contains(employee))
-                    {
-                        employees.Add(new Employee
-                        {
-                            Name = employee.Name,
-                            PassNumber = employee.PassNumber,
-                            DateOfBirth = employee.DateOfBirth,
-                            DateOfEmployment = employee.DateOfEmployment,
-                            Position = employee.Position,
-                            Id = employee.Id
-                        });
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Сотрудник {employee} уже присутствует в базе");
-                    }
-                }
-                catch (BankAdultException e)
-                {
-                    Console.WriteLine($"Возникла ошибка доступа по возрасту {e}");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Перехвачено исключение {e.Message}");
-                }
+                IfEmployeeAdd(person);
             }
-
             //var pathTxtFile = $"{path}\\Clients&Employees.txt";
             var pathJsonCl = $"{path}\\Clients.json";
             var pathJsonEmp = $"{path}\\Employees.json";
@@ -120,7 +134,6 @@ namespace BankSystem.Services
             string jsonEmpList = JsonConvert.SerializeObject(employees, Formatting.Indented);
             File.WriteAllText(pathJsonCl, jsonClList);
             File.WriteAllText(pathJsonEmp, jsonEmpList);
-
         }
 
 
