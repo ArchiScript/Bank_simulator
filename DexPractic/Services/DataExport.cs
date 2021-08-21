@@ -30,7 +30,7 @@ namespace BankSystem.Services
 
                 foreach (var field in fields)
                 {
-                    objFieldData += $"{field.Name}: {field.GetValue(obj)}";
+                    objFieldData += $"{field.Name}: {field.GetValue(obj)}{Environment.NewLine}";
                     Console.WriteLine($"{field.Name}: {field.GetValue(obj)}");
 
                 }

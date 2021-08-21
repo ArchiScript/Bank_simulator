@@ -1,0 +1,6 @@
+DateOfEmployment: 12.09.2020 
+Position: Дворник 
+Id: 74 
+Name: Василий Алибабаевич 
+PassNumber: 6595624 
+DateOfBirth: 15.08.1955 
