@@ -185,8 +185,23 @@ namespace BankSystem
             Type myType = typeof(Client);
             var myProperties = myType.GetProperties();
             var myMethods = myType.GetMethods();
+            //G:\C#Projects\DexPractic_Bank_System\BankSystemFiles
+            string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles", "reflectionExport.txt");
+             var dataExp = new DataExport();
+            var testAc = new Account() { AccNumber = 5456545, Balance = 4500, CurrencyType = new USD()};
+            dataExp.ExportProperties(testAc, path);
 
-
-        }
+            //dataExp.ExportProperties(bankServ.GetClientFromDict("I-ПР012341"), path);
+            dataExp.ExportProperties(new Employee()
+            {
+                Name = "Василий Алибабаевич",
+                DateOfBirth = "15.08.1955",
+                PassNumber = "6595624",
+                DateOfEmployment = "12.09.2020",
+                Id = 74,
+                Position = "Дворник"
+            }, path);
+            
+         }
     }
 }
