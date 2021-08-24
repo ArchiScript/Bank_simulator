@@ -19,5 +19,19 @@ namespace DextPractic.Tests
             Assert.Equal(163, result);
 
         }
+        [Fact]
+        public void GetExchange_10_USD_Eq_168_RUB()
+        {
+            //Arrange
+            var testExchange = new Exchange();
+            //Act 
+            var result = testExchange.ConvertCurrency<Currency>(10, new USD(), new RUB());
+
+            //Assert;
+            Assert.Equal(168, result);
+
+        }
+        [Fact]
+        public void GetClient
     }
 }

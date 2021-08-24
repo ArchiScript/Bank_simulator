@@ -13,7 +13,7 @@ namespace BankSystem
     {
         public static void Main(string[] args)
         {
-            var gg = 1;
+            
             /* var bankServ = new BankServices();
 
              //Заполнение листа
