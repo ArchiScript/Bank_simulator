@@ -32,6 +32,6 @@ namespace DextPractic.Tests
 
         }
         [Fact]
-        public void GetClient
+        
     }
 }
