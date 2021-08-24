@@ -31,7 +31,7 @@ namespace DextPractic.Tests
             Assert.Equal(168, result);
 
         }
-        [Fact]
+        
         
     }
 }
