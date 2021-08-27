@@ -5,18 +5,22 @@ using System.Collections.Generic;
 using Newtonsoft;
 using Newtonsoft.Json;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using BankSystem.Models.Currencies;
 
 
 namespace BankSystem
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
 
             var bankServ = new BankServices();
-
-            //Заполнение листа
+            
+            /*//Заполнение листа
             for (int i = 1; i <= 5; i++)
             {
                 var rand = new Random();
@@ -199,8 +203,15 @@ namespace BankSystem
                 DateOfEmployment = "12.09.2020",
                 Id = 74,
                 Position = "Дворник"
-            }, path);
+            }, path);*/
 
+
+            var currencyApi = new CurrencyAPIService();
+           CurrencyResponse myCurrencyData = await currencyApi.GetCurrencies();
+            foreach (var item in myCurrencyData.Quotes)
+            {
+                Console.WriteLine(item.Key + item.Value);
+            }
         }
     }
 }
