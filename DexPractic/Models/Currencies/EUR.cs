@@ -9,8 +9,9 @@ namespace BankSystem.Models
     {
         public EUR()
         {
-            Rate = 0.84m;
             Sign = "EUR";
+            Rate = CurrencyAPIService.GetStaticCurrencyRate($"USD{Sign}");
+
         }
     }
 }

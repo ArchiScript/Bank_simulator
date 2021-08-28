@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using BankSystem.Services;
 
 namespace BankSystem.Models
 {
@@ -8,8 +9,9 @@ namespace BankSystem.Models
     {
         public USD()
         {
-           Rate = 1.0m;
-           Sign = "USD";
+            Sign = "USD";
+            Rate = 1.0m;
+            
         }
     }
 }
