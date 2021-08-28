@@ -207,13 +207,19 @@ namespace BankSystem
 
             //==============   ОГРАНИЧЕННОЕ ЧИСЛО ЗАПРОСОВ К API ================
             var currencyApi = new CurrencyAPIService();
-            //CurrencyResponse myCurrencyData = await currencyApi.GetCurrencies();
+            CurrencyResponse myCurrencyData = await currencyApi.GetCurrencies();
 
+            
+            
             var mycur = currencyApi.GetCurrencyRate("USDRUB");
             Console.WriteLine(mycur);
-
+            var myCurrencyDataFromFile = currencyApi.GetCurrencyResponseFromFile();
+            var timeStamp = currencyApi.GetCurrencyResponseDate();
+            Console.WriteLine(timeStamp);
             var myEur = new EUR();
             Console.WriteLine(myEur.Rate);
+
+            
         }
     }
 }

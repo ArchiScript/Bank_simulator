@@ -1,1 +1,13 @@
-{"success":true,"terms":"https:\/\/currencylayer.com\/terms","privacy":"https:\/\/currencylayer.com\/privacy","timestamp":1630065198,"source":"USD","quotes":{"USDEUR":0.850255,"USDMDL":17.663366,"USDRUB":74.085501,"USDUAH":26.929033}}
+{
+  "Success": true,
+  "Terms": "https://currencylayer.com/terms",
+  "Privacy": "https://currencylayer.com/privacy",
+  "Timestamp": 1630065198,
+  "Source": "USD",
+  "Quotes": {
+    "USDEUR": 0.850255,
+    "USDMDL": 17.663366,
+    "USDRUB": 74.085501,
+    "USDUAH": 26.929033
+  }
+}
