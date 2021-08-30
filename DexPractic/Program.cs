@@ -226,13 +226,17 @@ namespace BankSystem
             
             ThreadPool.QueueUserWorkItem(_ =>
             {
+                int hash = Thread.CurrentThread.GetHashCode();
                 while (true)
                 {
                     lock (locker)
                     {
                         bankServ.ShowClients();
+                        Console.WriteLine(hash);
+
                     }
-                    Thread.Sleep(200);
+                    Thread.Sleep(1000);
+                    
                 }
             });
 
@@ -240,7 +244,8 @@ namespace BankSystem
 
             ThreadPool.QueueUserWorkItem(_ =>
              {
-                 for (int i = 0; i < 100; i++)
+                 int hash = Thread.CurrentThread.GetHashCode();
+                 for (int i = 0; i < 30; i++)
                  {
                      lock (locker)
                      {
@@ -248,12 +253,13 @@ namespace BankSystem
 
                          bankServ.Add(new Client
                          {
-                             Name = $"Имя{i} Фамилия{i} Отчество{i}",
+                             Name = $"{hash}Имя{i} Фамилия{i} Отчество{i}",
                              PassNumber = $"I-ПР01234{i}",
                              DateOfBirth = $"{rand.Next(1, 30)}.{rand.Next(1, 12)}.{rand.Next(1955, 2002)}",
                              Id = i,
                          });
                      }
+                     
                      Thread.Sleep(200);
 
                  }

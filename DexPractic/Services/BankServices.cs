@@ -80,7 +80,7 @@ namespace BankSystem.Services
                 {
                     throw new BankAdultException("Вы не достигли совершеннолетия");
                 }
-                if (!(clients.Count() == 0) && !clients.Contains(client))
+                if (!clients.Contains(client))
                 {
                     clients.Add(new Client
                     {
@@ -92,7 +92,7 @@ namespace BankSystem.Services
                 }
                 else
                 {
-                    Console.WriteLine($"Клиент {client} уже присутствует в базе");
+                    Console.WriteLine($"Клиент {client.Name} уже присутствует в базе");
                 }
             }
             catch (BankAdultException e)
@@ -457,7 +457,7 @@ namespace BankSystem.Services
         {
             foreach (var cl in clients)
             {
-                Console.WriteLine($"{cl.Name} {cl.PassNumber} {cl.Id} {cl.DateOfBirth}");
+                Console.WriteLine($"Вывод {cl.Name} {cl.PassNumber} {cl.Id} {cl.DateOfBirth}");
             }
         }
 
