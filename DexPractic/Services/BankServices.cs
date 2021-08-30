@@ -451,6 +451,16 @@ namespace BankSystem.Services
             return (age > minAge);
         }
 
+
+
+        public void ShowClients()
+        {
+            foreach (var cl in clients)
+            {
+                Console.WriteLine($"{cl.Name} {cl.PassNumber} {cl.Id} {cl.DateOfBirth}");
+            }
+        }
+
     }
 
 
