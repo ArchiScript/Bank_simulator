@@ -5,7 +5,7 @@ using BankSystem.Models;
 
 namespace DextPractic.Tests
 {
-    public class ExchangeTest
+    public class ExchangeTests
     {
         [Fact]
         public void GetExchange_10_USD_Eq_163_RUB()

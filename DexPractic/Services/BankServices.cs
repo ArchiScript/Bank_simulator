@@ -140,7 +140,7 @@ namespace BankSystem.Services
         //ДОБАВЛЯЕТ В СЛОВАРЬ НОВЫЙ СЧЕТ КЛИЕНТУ, ИЛИ НОВОГО КЛИЕНТА И СЧЕТ, ------ПИШЕТ В ФАЙЛ (JSON)
         public void AddClientAccount(Client client, Account account)
         {
-            
+
             if (!(clientsDict.Count == 0) && clientsDict.Keys.Contains(client))
             {
                 Console.WriteLine($"Клиент {client.Name} уже есть в базе...добавляем счет");
@@ -328,7 +328,8 @@ namespace BankSystem.Services
                 {
                     return findNameEmp.FirstOrDefault();
                 }
-            }else { return person; }
+            }
+            else { return person; }
 
         }
 
@@ -362,7 +363,7 @@ namespace BankSystem.Services
         {
             if (accountFrom.Balance < sum)
             {
-                Console.WriteLine($"Недостаточно средств на счете {accountFrom}");
+                Console.WriteLine($"Недостаточно средств на счете {accountFrom.AccNumber}");
             }
             else
             {
@@ -457,10 +458,9 @@ namespace BankSystem.Services
         {
             foreach (var cl in clients)
             {
-                Console.WriteLine($"Вывод {cl.Name} {cl.PassNumber} {cl.Id} {cl.DateOfBirth}");
+                Console.WriteLine($"{cl.Name} {cl.PassNumber} {cl.Id} {cl.DateOfBirth}");
             }
         }
-
     }
 
 
