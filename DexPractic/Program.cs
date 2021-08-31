@@ -87,7 +87,7 @@ namespace BankSystem
             bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
             {
                 AccNumber = 1013,
-                Balance = 5445,
+                Balance = 0,
                 CurrencyType = new UAH()
             });
             bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
@@ -221,18 +221,18 @@ namespace BankSystem
  */
             //========================   ОГРАНИЧЕННОЕ ЧИСЛО ЗАПРОСОВ К API ================
 
-            /* var currencyApi = new CurrencyAPIService();
-             CurrencyResponse myCurrencyData = await currencyApi.GetCurrencies();
+            /*var currencyApi = new CurrencyAPIService();
+            CurrencyResponse myCurrencyData = await currencyApi.GetCurrencies();
 
 
 
-             var mycur = currencyApi.GetCurrencyRate("USDRUB");
-             Console.WriteLine(mycur);
-             var myCurrencyDataFromFile = currencyApi.GetCurrencyResponseFromFile();
-             var timeStamp = currencyApi.GetCurrencyResponseDate();
-             Console.WriteLine(timeStamp);
-             var myEur = new EUR();
-             Console.WriteLine(myEur.Rate);*/
+            var mycur = currencyApi.GetCurrencyRate("USDRUB");
+            Console.WriteLine(mycur);
+            var myCurrencyDataFromFile = currencyApi.GetCurrencyResponseFromFile();
+            var timeStamp = currencyApi.GetCurrencyResponseDate();
+            Console.WriteLine(timeStamp);
+            var myUah = new UAH();
+            Console.WriteLine(myUah.Rate);*/
 
             //==================================Threading================================
 
@@ -284,47 +284,53 @@ namespace BankSystem
 
             //====================== THREADING MONEY TRANSFER =======================
             //Проверить состояние счета в гривнах
-           // Console.WriteLine($"{accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign}");
+            var uah = new UAH();
+            Console.WriteLine(uah.Rate);
+            Console.WriteLine($"{accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n " +
+                $"{accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign}");
 
-            /* object locker1 = new object();
-
-
-             ThreadPool.QueueUserWorkItem(_ =>
-             {
-                 var hash = Thread.CurrentThread.GetHashCode();
-                 lock (locker1)
-                 {
-                     if (accs.Count > 1)
-                     {
-                         //Перевод со счета на счет, Exchange и Вывод 
-                         Console.WriteLine($"------- Поток {hash} ---- Счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign}  " +
-                             $" Счет {accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign} \n ");
-                         bankServ.MoneyTransfer(120, accs[0], accs[1], exchangeHandler);
-                         Console.WriteLine("\n ");
-                     }
-                     else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
-                 }
-             });
+            object locker1 = new object();
 
 
-             ThreadPool.QueueUserWorkItem(_ =>
-             {
-                 var hash = Thread.CurrentThread.GetHashCode();
-                 lock (locker1)
-                 {
-                     if (accs.Count > 1)
-                     {
-                         //Перевод со счета на счет, Exchange и Вывод 
-                         Console.WriteLine($" ------- Поток {hash} ---- Счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign}  " +
-                             $" Счет {accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign} \n ");
-                         bankServ.MoneyTransfer(120, accs[0], accs[1], exchangeHandler);
-                         Console.WriteLine("\n ");
-                     }
-                     else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
-                 }
-             });
+            /*ThreadPool.QueueUserWorkItem(_ =>
+            {
+                var hash = Thread.CurrentThread.GetHashCode();
+                lock (locker1)
+                {
+                    if (accs.Count > 1)
+                    {
+                        //Перевод со счета на счет, Exchange и Вывод 
+                        Console.WriteLine($"------- Поток {hash} ---- Счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign}  " +
+                           $" Счет {accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign} \n ");
+                        bankServ.MoneyTransfer(100, accs[0], accs[1], exchangeHandler);
+                        Console.WriteLine("\n ");
+                    }
+                    else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
+                }
+                Thread.Sleep(500);
+            });
 
-             Console.ReadLine();*/
+
+            ThreadPool.QueueUserWorkItem(_ =>
+            {
+                var hash = Thread.CurrentThread.GetHashCode();
+                lock (locker1)
+                {
+                    if (accs.Count > 1)
+                    {
+                        //Перевод со счета на счет, Exchange и Вывод 
+                        Console.WriteLine($" ------- Поток {hash} ---- Счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign}  " +
+                           $" Счет {accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign} \n ");
+                        bankServ.MoneyTransfer(100, accs[0], accs[1], exchangeHandler); int result = (int)Math.Round(accs[1].Balance);
+                        Console.WriteLine($"\n { result} "); 
+                        
+                    }
+                    else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
+                }
+                Thread.Sleep(500);
+            });
+            
+            Console.ReadLine();*/
 
 
 

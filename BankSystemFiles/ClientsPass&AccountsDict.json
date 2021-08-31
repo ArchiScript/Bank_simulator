@@ -11,15 +11,15 @@
     {
       "CurrencyType": {
         "Sign": "UAH",
-        "Rate": 26.929033
+        "Rate": 26.902925
       },
-      "Balance": 5445.0,
+      "Balance": 0.0,
       "AccNumber": 1013
     },
     {
       "CurrencyType": {
         "Sign": "MDL",
-        "Rate": 17.663366
+        "Rate": 17.61527
       },
       "Balance": 19895.0,
       "AccNumber": 1025

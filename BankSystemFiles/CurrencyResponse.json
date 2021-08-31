@@ -2,12 +2,12 @@
   "Success": true,
   "Terms": "https://currencylayer.com/terms",
   "Privacy": "https://currencylayer.com/privacy",
-  "Timestamp": 1630065198,
+  "Timestamp": 1630410783,
   "Source": "USD",
   "Quotes": {
-    "USDEUR": 0.850255,
-    "USDMDL": 17.663366,
-    "USDRUB": 74.085501,
-    "USDUAH": 26.929033
+    "USDEUR": 0.844773,
+    "USDMDL": 17.61527,
+    "USDRUB": 73.268017,
+    "USDUAH": 26.902925
   }
 }
