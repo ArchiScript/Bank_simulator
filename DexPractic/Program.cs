@@ -361,8 +361,9 @@ namespace BankSystem
                     Console.WriteLine($"{ac.AccNumber} {ac.Balance} {ac.CurrencyType.Sign}");
                 }
             }
-            /*var ret =  bankServ.PutMoneyAndChange(25, accs[0], "I-ПР012341");
-             Console.WriteLine(ret.Balance);*/
+            var ret = bankServ.PutMoneyAndChange(425, accs[0], "I-ПР012341");
+            Console.WriteLine(ret.Balance);
+            Console.WriteLine(bankServ.GetAccountsFromPair(bankServ.FindFromFileDict("I-ПР012341"))[1].Balance );
         }
     }
 }

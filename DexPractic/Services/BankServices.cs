@@ -510,38 +510,39 @@ namespace BankSystem.Services
         }
 
 
-        /*public Account PutMoneyAndChange(decimal sum, Account account, string passnum)
-                {
-                    var path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles", "ClientsPass&AccountsDict.json");
-                    try
-                    {
-                        account.Balance += sum;
+        public Account PutMoneyAndChange(decimal sum, Account account, string passnum)
+        {
+            var path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles", "ClientsPass&AccountsDict.json");
+            var path2 = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles", "TestClientsPass&AccountsDict.json");
+            try
+            {
+                account.Balance += sum;
 
-                        //accsListSt[passnum].Balance = 
-                        var find =
-                        from pair in clPassAccDictSt
-                        where pair.Key == passnum
-                        select pair;
-                        var find2 =
-                            from cl in find.FirstOrDefault().Value
-                            where cl.AccNumber == account.AccNumber
-                            select cl;
-                        var ret = find2.FirstOrDefault();
-                        find2.FirstOrDefault().Balance = account.Balance;
-                       *//* find.FirstOrDefault().Balance = account.Balance;
-                        Console.WriteLine(find.FirstOrDefault().Balance);*//*
+                //accsListSt[passnum].Balance = 
+                var find =
+                from pair in clPassAccDictSt
+                where pair.Key == passnum
+                select pair;
+                var find2 =
+                    from cl in find.FirstOrDefault().Value
+                    where cl.AccNumber == account.AccNumber
+                    select cl;
+                var ret = find2.FirstOrDefault();
+                find2.FirstOrDefault().Balance = account.Balance;
+                /*find.FirstOrDefault().Balance = account.Balance;
+                Console.WriteLine(find.FirstOrDefault().Balance)*/;
 
 
-                        string st = JsonConvert.SerializeObject(accsListSt);
-                        File.WriteAllText(path, st);
-                        return ret;
-                    }
-                    catch (Exception)
-                    {
+                string st = JsonConvert.SerializeObject(clPassAccDictSt,Formatting.Indented);
+                File.WriteAllText(path, st);
+                return ret;
+            }
+            catch (Exception)
+            {
 
-                        throw;
-                    }
-                }*/
+                throw;
+            }
+        }
 
 
 

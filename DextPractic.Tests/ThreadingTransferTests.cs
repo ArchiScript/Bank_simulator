@@ -12,26 +12,25 @@ namespace DextPractic.Tests
     {
         private object locker = new object();
         [Fact]
-        
+
         public void TwoThreadPutMoney_100_UAH_eq_200()
         {
             //Arrange
-           // object locker = new object();
+            // object locker = new object();
             var bankServ = new BankServices();
 
-            var accs = bankServ.GetAccountsFromFile("I-ПР012341");
+            //BankServices.accsListSt = bankServ.GetAccountsFromFile("I-ПР012341");
 
-            BankServices.accsListSt = bankServ.GetAccountsFromFile("I-ПР012341");
-
+            var accs = bankServ.GetAccountsFromPair(bankServ.FindFromFileDict("I-ПР012341"));
             //Act 
             ThreadPool.QueueUserWorkItem(_ =>
             {
-                //Thread.CurrentThread.Join();
+                
                 lock (locker)
                 {
-                    accs[1] = bankServ.PutMoney(100, accs[1]);
+                    bankServ.PutMoneyAndChange(100, accs[1], "I-ПР012341");
                 }
-                Thread.CurrentThread.Join();
+                //Thread.CurrentThread.Join();
             });
 
             ThreadPool.QueueUserWorkItem(_ =>
@@ -39,17 +38,16 @@ namespace DextPractic.Tests
 
                 lock (locker)
                 {
-                    accs[1] = bankServ.PutMoney(100, accs[1]);
+                    bankServ.PutMoneyAndChange(100, accs[1], "I-ПР012341");
                 }
-                
+                //Thread.CurrentThread.Join();
             });
 
-            int result = (int)Math.Round(accs[0].Balance);
+            int result = (int)Math.Round(accs[1].Balance);
 
             //Assert
 
-            Assert.Equal(2, result);
-            //Assert.NotNull(accs);
+            Assert.Equal(600, result);
 
         }
 
