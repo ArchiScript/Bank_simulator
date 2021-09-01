@@ -17,7 +17,7 @@ namespace BankSystem.Services
         public static List<Client> clients = new List<Client>();
         public static List<Employee> employees = new List<Employee>();
         public static Dictionary<Client, List<Account>> clientsDict = new Dictionary<Client, List<Account>>();
-
+        public static Dictionary<string, List<Account>> clPassAccDictSt = AccountsFromFileToDict();
         public static Dictionary<string, List<Account>> clPassAccDict = new Dictionary<string, List<Account>>();
         public static List<Account> accsListSt = new List<Account>();
 
@@ -283,7 +283,7 @@ namespace BankSystem.Services
 
 
         //ВОЗВРАЩАЕТ СЛОВАРЬ С КЛЮЧОМ ВВИДЕ номеров пасспорта -------- ИЗ ФАЙЛА (JSON)
-        public  Dictionary<string, List<Account>> AccountsFromFileToDict()
+        public static  Dictionary<string, List<Account>> AccountsFromFileToDict()
         {
             string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
@@ -510,8 +510,41 @@ namespace BankSystem.Services
         }
 
 
+        /*public Account PutMoneyAndChange(decimal sum, Account account, string passnum)
+                {
+                    var path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles", "ClientsPass&AccountsDict.json");
+                    try
+                    {
+                        account.Balance += sum;
 
-        
+                        //accsListSt[passnum].Balance = 
+                        var find =
+                        from pair in clPassAccDictSt
+                        where pair.Key == passnum
+                        select pair;
+                        var find2 =
+                            from cl in find.FirstOrDefault().Value
+                            where cl.AccNumber == account.AccNumber
+                            select cl;
+                        var ret = find2.FirstOrDefault();
+                        find2.FirstOrDefault().Balance = account.Balance;
+                       *//* find.FirstOrDefault().Balance = account.Balance;
+                        Console.WriteLine(find.FirstOrDefault().Balance);*//*
+
+
+                        string st = JsonConvert.SerializeObject(accsListSt);
+                        File.WriteAllText(path, st);
+                        return ret;
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+                }*/
+
+
+
     }
 
 

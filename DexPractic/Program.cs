@@ -20,8 +20,8 @@ namespace BankSystem
         {
 
             var bankServ = new BankServices();
-            var statAccs = bankServ.AccountsFromFileToDict();
-
+           // var statAccs = bankServ.AccountsFromFileToDict();
+            var dictFromFile = bankServ.GetDictFromFile();
             //======================== Заполнение листа ============================
 
             for (int i = 1; i <= 5; i++)
@@ -47,7 +47,7 @@ namespace BankSystem
                 }, new Account { AccNumber = 1000 + uli, Balance = 730 + i, CurrencyType = new USD() });
             }
 
-            var testClDict = BankServices.clientsDict;
+            
 
 
             //================== Тестовое добавление в лист клиента и сотр
@@ -119,7 +119,7 @@ namespace BankSystem
             });
 
             //=========================== Вывод в консоль всех клиентов в словаре =================
-            var dictFromFile = bankServ.GetDictFromFile();
+
             /*foreach (var pair in dictFromFile)
             {
                 if (pair.Value.Count > 1)
@@ -351,15 +351,18 @@ namespace BankSystem
 
 
             //var statAccs = BankServices.clPassAccDict;
-            
-            foreach (var item in statAccs)
+            Console.WriteLine(accs[0].Balance);
+            var stataccs = BankServices.clPassAccDictSt;
+            foreach (var item in stataccs)
             {
-                Console.WriteLine($"========= статический словарь {item.Key}");
+                Console.WriteLine($"========= словарь {item.Key}");
                 foreach (var ac in item.Value)
                 {
                     Console.WriteLine($"{ac.AccNumber} {ac.Balance} {ac.CurrencyType.Sign}");
                 }
             }
+            /*var ret =  bankServ.PutMoneyAndChange(25, accs[0], "I-ПР012341");
+             Console.WriteLine(ret.Balance);*/
         }
     }
 }
