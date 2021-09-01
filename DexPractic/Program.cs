@@ -20,9 +20,10 @@ namespace BankSystem
         {
 
             var bankServ = new BankServices();
+            var statAccs = bankServ.AccountsFromFileToDict();
 
             //======================== Заполнение листа ============================
-            
+
             for (int i = 1; i <= 5; i++)
             {
                 var rand = new Random();
@@ -51,25 +52,25 @@ namespace BankSystem
 
             //================== Тестовое добавление в лист клиента и сотр
             //для проверки исключения по возрасту ===================================
-          /*  bankServ.Add(new Client
-            {
-                Name = "Нина Ивановна Дрыщ",
-                PassNumber = "I-ПР133242",
-                DateOfBirth = "17.05.2002",
-                Id = 19
-            });
-            bankServ.Add(new Employee
-            {
-                Name = $"Денис Ростиславович Бабаев",
-                PassNumber = $"I-ПР032360",
-                DateOfBirth = $"12.05.1975",
-                Id = 20,
-                DateOfEmployment = $"25.08.2016",
-                Position = $"Директор"
-            });*/
+            /*  bankServ.Add(new Client
+              {
+                  Name = "Нина Ивановна Дрыщ",
+                  PassNumber = "I-ПР133242",
+                  DateOfBirth = "17.05.2002",
+                  Id = 19
+              });
+              bankServ.Add(new Employee
+              {
+                  Name = $"Денис Ростиславович Бабаев",
+                  PassNumber = $"I-ПР032360",
+                  DateOfBirth = $"12.05.1975",
+                  Id = 20,
+                  DateOfEmployment = $"25.08.2016",
+                  Position = $"Директор"
+              });*/
 
             //==============  Найти из словаря и показать ==================================
-           
+
             /*var testPair = bankServ.FindFromDict("I-ПР012341");
             foreach (var pair in testPair)
             {
@@ -83,7 +84,7 @@ namespace BankSystem
             Console.WriteLine($" \n Сконвертировано: {testExchange}");
 */
             // =======================  Добавление доп счетов ================================
-           
+
             bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
             {
                 AccNumber = 1013,
@@ -110,11 +111,16 @@ namespace BankSystem
                 CurrencyType = new RUB()
             });
 
-
+            bankServ.AddClientAccount(bankServ.GetClientFromDict("I-ПР012341"), new Account
+            {
+                AccNumber = 1016,
+                Balance = 900,
+                CurrencyType = new EUR()
+            });
 
             //=========================== Вывод в консоль всех клиентов в словаре =================
-            
-           /* foreach (var pair in testClDict)
+            var dictFromFile = bankServ.GetDictFromFile();
+            /*foreach (var pair in dictFromFile)
             {
                 if (pair.Value.Count > 1)
                 {
@@ -147,20 +153,20 @@ namespace BankSystem
             var exchangeHandler = new BankServices.ExchangeDelegate(exc.ConvertCurrency);
 
             //Найти по номеру пасспорта и вернуть ключ-знач
-            var tranferCl = bankServ.FindFromDict("I-ПР012341");
+            var transferCl = bankServ.FindFromDict("I-ПР012341");
             //Выбрать из ключ-значения список счетов
-            var accs = bankServ.GetAccountsFromPair(tranferCl);
-
+            //var accs = bankServ.GetAccountsFromPair(transferCl);
+            var accs = bankServ.GetAccountsFromFile("I-ПР012341");
             //======================== Перевод со счета на счет, Exchange и Вывод ================
 
-            /* if (accs.Count > 1)
-             {
-                 Console.WriteLine($" Счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign}  " +
-                     $" Счет {accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign} \n ");
-                 bankServ.MoneyTransfer(120, accs[0], accs[1], exchangeHandler);
-                 Console.WriteLine("\n ");
-             }
-             else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }*/
+            /*if (accs.Count > 1)
+            {
+                Console.WriteLine($" Счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign}  " +
+                    $" Счет {accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign} \n ");
+                bankServ.MoneyTransfer(120, accs[0], accs[1], exchangeHandler);
+                Console.WriteLine("\n ");
+            }
+            else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }*/
 
 
             //===================== Перевод со счета на счет,Exchange с помощью Func и Вывод  ====================
@@ -284,15 +290,17 @@ namespace BankSystem
 
             //====================== THREADING MONEY TRANSFER =======================
             //Проверить состояние счета в гривнах
-            var uah = new UAH();
+            /*var uah = new UAH();
             Console.WriteLine(uah.Rate);
-            Console.WriteLine($"{accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n " +
-                $"{accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign}");
+            *//*Console.WriteLine($"{accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n " +
+                $"{accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign}");*//*
+
+            Console.WriteLine((bankServ.GetAccountsFromFile("I-ПР012341")[0].Balance));
 
             object locker1 = new object();
 
 
-            /*ThreadPool.QueueUserWorkItem(_ =>
+            ThreadPool.QueueUserWorkItem(_ =>
             {
                 var hash = Thread.CurrentThread.GetHashCode();
                 lock (locker1)
@@ -307,7 +315,7 @@ namespace BankSystem
                     }
                     else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
                 }
-                Thread.Sleep(500);
+                // Thread.Sleep(500);
             });
 
 
@@ -322,19 +330,36 @@ namespace BankSystem
                         Console.WriteLine($" ------- Поток {hash} ---- Счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign}  " +
                            $" Счет {accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign} \n ");
                         bankServ.MoneyTransfer(100, accs[0], accs[1], exchangeHandler); int result = (int)Math.Round(accs[1].Balance);
-                        Console.WriteLine($"\n { result} "); 
-                        
+                        Console.WriteLine($"\n { result} ");
+
                     }
                     else { Console.WriteLine($"Найден только один счет {accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n "); }
                 }
-                Thread.Sleep(500);
+
+                //Thread.Sleep(1000);
             });
+
+            //Console.ReadLine();
+            Console.WriteLine($"---------{ accs[1].AccNumber} { accs[1].Balance} { accs[1].CurrencyType.Sign} \n");
+
+            var cl = bankServ.GetClientFromDict("I-ПР012341");
+            Console.WriteLine($"{cl.Name}");
+
+            bankServ.ShowClients();
+            var a = bankServ.PutMoney(523, accs[0]);
+            Console.WriteLine(a.Balance + accs[0].CurrencyType.Sign);*/
+
+
+            //var statAccs = BankServices.clPassAccDict;
             
-            Console.ReadLine();*/
-
-
-
-
+            foreach (var item in statAccs)
+            {
+                Console.WriteLine($"========= статический словарь {item.Key}");
+                foreach (var ac in item.Value)
+                {
+                    Console.WriteLine($"{ac.AccNumber} {ac.Balance} {ac.CurrencyType.Sign}");
+                }
+            }
         }
     }
 }

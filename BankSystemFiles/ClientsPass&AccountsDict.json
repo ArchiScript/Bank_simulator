@@ -23,6 +23,14 @@
       },
       "Balance": 19895.0,
       "AccNumber": 1025
+    },
+    {
+      "CurrencyType": {
+        "Sign": "EUR",
+        "Rate": 0.844773
+      },
+      "Balance": 900.0,
+      "AccNumber": 1016
     }
   ],
   "I-ПР012342": [

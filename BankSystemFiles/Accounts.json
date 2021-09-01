@@ -25,6 +25,14 @@
   },
   {
     "CurrencyType": {
+      "Sign": "EUR",
+      "Rate": 0.844773
+    },
+    "Balance": 900.0,
+    "AccNumber": 1016
+  },
+  {
+    "CurrencyType": {
       "Sign": "USD",
       "Rate": 1.0
     },

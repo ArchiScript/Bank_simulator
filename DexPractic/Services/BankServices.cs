@@ -17,8 +17,9 @@ namespace BankSystem.Services
         public static List<Client> clients = new List<Client>();
         public static List<Employee> employees = new List<Employee>();
         public static Dictionary<Client, List<Account>> clientsDict = new Dictionary<Client, List<Account>>();
-        public static Dictionary<string, List<Account>> clPassAccDict = new Dictionary<string, List<Account>>();
 
+        public static Dictionary<string, List<Account>> clPassAccDict = new Dictionary<string, List<Account>>();
+        public static List<Account> accsListSt = new List<Account>();
 
         //Определяем делегат
         public delegate decimal ExchangeDelegate(decimal sum, Currency convertFrom, Currency convertTo);
@@ -206,13 +207,10 @@ namespace BankSystem.Services
             File.WriteAllText(pathToClJson, clListJson);
         }
 
-
-
-        //ВОЗВРАЩАЕТ КЛЮЧ-ЗНАЧЕНИЕ С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА --------- ИСТОЧНИК ДАННЫХ ИЗ ФАЙЛА (JSON)
         public Dictionary<Client, List<Account>> FindFromDict(string passNumber)
         {
             Dictionary<Client, List<Account>> newDic = new Dictionary<Client, List<Account>>();
-            if (!(GetDictFromFile().Count == 0))
+            if (!(clientsDict.Count == 0))
             {
                 var findNameCl =
                      from client in clientsDict
@@ -227,13 +225,49 @@ namespace BankSystem.Services
             return newDic;
         }
 
+        //ВОЗВРАЩАЕТ КЛЮЧ-ЗНАЧЕНИЕ С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА --------- ИСТОЧНИК ДАННЫХ ИЗ ФАЙЛА (JSON)
+        public Dictionary<Client, List<Account>> FindFromFileDict(string passNumber)
+        {
+            Dictionary<Client, List<Account>> newDic = new Dictionary<Client, List<Account>>();
+            if (!(GetDictFromFile().Count == 0))
+            {
+                var findNameCl =
+                     from client in GetDictFromFile()
+                     where client.Key.PassNumber == passNumber
+                     select client;
+                foreach (var pair in findNameCl)
+                {
+                    newDic.Add(pair.Key, pair.Value);
+                }
+            }
+
+            return newDic;
+        }
+
+
+
+        public List<Account> GetAccountsFromFile(string passnumber)
+        {
+            List<Account> accList = new List<Account>();
+            if (!(GetDictFromFile().Count == 0))
+            {
+                var findNameCl =
+                     from client in GetDictFromFile()
+                     where client.Key.PassNumber == passnumber
+                     select client;
+                return findNameCl.FirstOrDefault().Value;
+            }
+            else { return accList; }
+        }
+
+
 
         //ВОЗВРАЩАЕТ ЛИСТ КЛИЕНТОВ, СЧИТАННЫЙ -------- ИЗ ФАЙЛА (JSON)
         private List<Client> ClientFromFileToList()
         {
             //List<Client> fromFileClList = new List<Client>();
             string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
-            string pathToCl = Path.Combine(path, "Clients.txt");
+            //string pathToCl = Path.Combine(path, "Clients.txt");
             string pathToClJson = Path.Combine(path, "Clients.json");
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
 
@@ -249,7 +283,7 @@ namespace BankSystem.Services
 
 
         //ВОЗВРАЩАЕТ СЛОВАРЬ С КЛЮЧОМ ВВИДЕ номеров пасспорта -------- ИЗ ФАЙЛА (JSON)
-        private Dictionary<string, List<Account>> AccountFromFileToDict()
+        public  Dictionary<string, List<Account>> AccountsFromFileToDict()
         {
             string path = Path.Combine("G:", "C#Projects", "DexPractic_Bank_System", "BankSystemFiles");
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
@@ -258,12 +292,12 @@ namespace BankSystem.Services
             {
                 directoryInfo.Create();
             }
-            string pathToAcc = Path.Combine(path, "Accounts.txt");
+            //string pathToAcc = Path.Combine(path, "Accounts.txt");
             string pathToAccJson = Path.Combine(path, "Accounts.json");
             string pathToAccClDict = Path.Combine(path, "ClientsPass&AccountsDict.json");
-            if (!File.Exists(pathToAcc))
+            if (!File.Exists(pathToAccJson))
             {
-                File.Create(pathToAcc);
+                File.Create(pathToAccJson);
             }
 
             string jsonAccClDict = File.ReadAllText(pathToAccClDict);
@@ -284,14 +318,14 @@ namespace BankSystem.Services
             {
                 directoryInfo.Create();
             }
-            string pathToClAcc = Path.Combine(path, "Clients&Accounts.txt");
+            //string pathToClAcc = Path.Combine(path, "Clients&Accounts.txt");
             string pathToClAccJson = Path.Combine(path, "Clients&Accounts.json");
-            if (!File.Exists(pathToClAcc))
+            if (!File.Exists(pathToClAccJson))
             {
-                File.Create(pathToClAcc);
+                File.Create(pathToClAccJson);
             }
             var fromFileClList = ClientFromFileToList();
-            var fromFileAccClDict = AccountFromFileToDict();
+            var fromFileAccClDict = AccountsFromFileToDict();
 
             foreach (var pair in fromFileAccClDict)
             {
@@ -305,6 +339,7 @@ namespace BankSystem.Services
             }
             return fromFileClListAccDict;
         }
+
 
         //ВОЗВРАЩАЕТ IPerson ИЗ ЛИСТА С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ НОМЕРА ПАССПОРТА
         public IPerson Find<T>(string passNumber) where T : IPerson
@@ -333,28 +368,6 @@ namespace BankSystem.Services
 
         }
 
-
-        //ВОЗВРАЩАЕТ IPerson ИЗ ЛИСТА С ПЕРЕДАЧЕЙ ПАРАМЕТРОМ ОБЪЕКТА
-        public IPerson Find<T>(T person) where T : IPerson
-        {
-
-            if (person is Employee)
-            {
-                var findEmp =
-                    from employee in employees
-                    where employee.PassNumber == person.PassNumber
-                    select employee;
-                return findEmp.FirstOrDefault();
-            }
-            else
-            {
-                var findCl =
-                  from client in clients
-                  where client.PassNumber == person.PassNumber
-                  select client;
-                return findCl.FirstOrDefault();
-            }
-        }
 
 
         //ПЕРЕВОДИТ СРЕДСТВА С ОДНОГО СЧЕТА КЛИЕНТА НА ДРУГОЙ С КОНВЕРТАЦИЕЙ
@@ -421,6 +434,40 @@ namespace BankSystem.Services
             }
         }
 
+
+        public  Account PutMoney(decimal sum, Account account)
+        {
+            try
+            {
+                account.Balance += sum;
+                return account;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public void RetrieveMoney(decimal sum, Account account)
+        {
+            try
+            {
+                if (account.Balance != 0)
+                {
+                    account.Balance -= sum;
+                }
+                else
+                {
+                    throw new LowBalanceException($"Недостаточно средств на счете {account.AccNumber} " +
+                        $"для снятия суммы {sum} {account.CurrencyType.Sign}");
+                }
+            }
+            catch (LowBalanceException e)
+            {
+                Console.WriteLine($"Возникла ошибка при проведении банковской операции {e}");
+            }
+        }
+
         //ВОЗВРАЩАЕТ СПИСОК СЧЕТОВ ЗАРАНЕЕ НАЙДЕННОГО КЛИЕНТА КЛИЕНТА
         public List<Account> GetAccountsFromPair(Dictionary<Client, List<Account>> keyValuePair)
         {
@@ -434,7 +481,7 @@ namespace BankSystem.Services
             try
             {
                 return
-                   (from client in clientsDict
+                   (from client in GetDictFromFile()
                     where client.Key.PassNumber == passNumber
                     select client).FirstOrDefault().Key;
             }
@@ -461,6 +508,10 @@ namespace BankSystem.Services
                 Console.WriteLine($"{cl.Name} {cl.PassNumber} {cl.Id} {cl.DateOfBirth}");
             }
         }
+
+
+
+        
     }
 
 

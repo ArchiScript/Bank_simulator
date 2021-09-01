@@ -10,45 +10,64 @@ namespace DextPractic.Tests
 {
     public class ThreadingTransferTests
     {
+        private object locker = new object();
         [Fact]
-
-        public void TwoThreadTransfer_100_USD_eq_5381_UAH()
+        
+        public void TwoThreadPutMoney_100_UAH_eq_200()
         {
             //Arrange
-            object locker = new object();
+           // object locker = new object();
             var bankServ = new BankServices();
 
-            var exc = new Exchange();
-            var uah = new UAH();
-            //Создаем переменную делегата и присваиваем ей адрес метода 
-            var exchangeHandler = new BankServices.ExchangeDelegate(exc.ConvertCurrency);
+            var accs = bankServ.GetAccountsFromFile("I-ПР012341");
 
-            //Найти по номеру пасспорта и вернуть ключ-знач
-            var transferCl = bankServ.FindFromDict("I-ПР012341");
-            //Выбрать из ключ-значения список счетов
-            var accs = bankServ.GetAccountsFromPair(transferCl);
-            
+            BankServices.accsListSt = bankServ.GetAccountsFromFile("I-ПР012341");
+
             //Act 
             ThreadPool.QueueUserWorkItem(_ =>
             {
+                //Thread.CurrentThread.Join();
                 lock (locker)
                 {
-                    bankServ.MoneyTransfer(100, accs[0], accs[1], exchangeHandler);
+                    accs[1] = bankServ.PutMoney(100, accs[1]);
                 }
+                Thread.CurrentThread.Join();
             });
+
             ThreadPool.QueueUserWorkItem(_ =>
             {
+
                 lock (locker)
                 {
-                    bankServ.MoneyTransfer(100, accs[0], accs[1], exchangeHandler);
+                    accs[1] = bankServ.PutMoney(100, accs[1]);
                 }
+                
             });
 
             int result = (int)Math.Round(accs[0].Balance);
-            int result1 = (int)accs[0].Balance;
-            //Assert
-            Assert.Equal(531, result1);
 
+            //Assert
+
+            Assert.Equal(2, result);
+            //Assert.NotNull(accs);
+
+        }
+
+        [Fact]
+
+        public void FindFromDict_eq_pair()
+        {
+            // Arrange
+
+            var bankServ = new BankServices();
+
+            //Act
+            var transferCl = bankServ.FindFromDict("I-ПР012341");
+            var ac = bankServ.GetAccountsFromFile("I-ПР012341");
+            var myac = ac[0].Balance;
+
+            //Assert
+            Assert.Equal(731, myac);
         }
 
     }
