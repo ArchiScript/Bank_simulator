@@ -20,7 +20,7 @@ namespace BankSystem
         {
 
             var bankServ = new BankServices();
-           // var statAccs = bankServ.AccountsFromFileToDict();
+            // var statAccs = bankServ.AccountsFromFileToDict();
             var dictFromFile = bankServ.GetDictFromFile();
             //======================== Заполнение листа ============================
 
@@ -47,7 +47,7 @@ namespace BankSystem
                 }, new Account { AccNumber = 1000 + uli, Balance = 730 + i, CurrencyType = new USD() });
             }
 
-            
+
 
 
             //================== Тестовое добавление в лист клиента и сотр
@@ -142,7 +142,6 @@ namespace BankSystem
             }
             Console.WriteLine("\n");*/
 
-
             var exc = new Exchange();
 
             //Присваиваем Func метод ConvertCurrency предварительно создав экземпляр Exchange
@@ -157,6 +156,7 @@ namespace BankSystem
             //Выбрать из ключ-значения список счетов
             //var accs = bankServ.GetAccountsFromPair(transferCl);
             var accs = bankServ.GetAccountsFromFile("I-ПР012341");
+
             //======================== Перевод со счета на счет, Exchange и Вывод ================
 
             /*if (accs.Count > 1)
@@ -240,9 +240,9 @@ namespace BankSystem
             var myUah = new UAH();
             Console.WriteLine(myUah.Rate);*/
 
-            //==================================Threading================================
+            //============================== THREADING ПРАКТИКА ЗАДАНИЕ 1 ================
 
-            /*bankServ.ShowClients();
+            bankServ.ShowClients();
             object locker = new object();
 
             ThreadPool.QueueUserWorkItem(_ =>
@@ -254,10 +254,8 @@ namespace BankSystem
                     {
                         bankServ.ShowClients();
                         Console.WriteLine($"Вывод Поток --- {hash}");
-
                     }
                     Thread.Sleep(1000);
-
                 }
             });
 
@@ -278,24 +276,15 @@ namespace BankSystem
                             Id = i,
                         });
                     }
-
                     Thread.Sleep(1000);
-
                 }
             });
 
+            Console.ReadLine();
 
-            Console.ReadLine();*/
 
+            //====================== THREADING MONEY TRANSFER  ПРАКТИКА ЗАДАНИЕ 2 ================
 
-            //====================== THREADING MONEY TRANSFER =======================
-            //Проверить состояние счета в гривнах
-            /*var uah = new UAH();
-            Console.WriteLine(uah.Rate);
-            *//*Console.WriteLine($"{accs[0].AccNumber} {accs[0].Balance} {accs[0].CurrencyType.Sign} \n " +
-                $"{accs[1].AccNumber} {accs[1].Balance} {accs[1].CurrencyType.Sign}");*//*
-
-            Console.WriteLine((bankServ.GetAccountsFromFile("I-ПР012341")[0].Balance));
 
             object locker1 = new object();
 
@@ -339,31 +328,14 @@ namespace BankSystem
                 //Thread.Sleep(1000);
             });
 
-            //Console.ReadLine();
-            Console.WriteLine($"---------{ accs[1].AccNumber} { accs[1].Balance} { accs[1].CurrencyType.Sign} \n");
+            Console.ReadLine();
 
-            var cl = bankServ.GetClientFromDict("I-ПР012341");
-            Console.WriteLine($"{cl.Name}");
-
-            bankServ.ShowClients();
-            var a = bankServ.PutMoney(523, accs[0]);
-            Console.WriteLine(a.Balance + accs[0].CurrencyType.Sign);*/
+            //========================================================================
 
 
-            //var statAccs = BankServices.clPassAccDict;
-            Console.WriteLine(accs[0].Balance);
-            var stataccs = BankServices.clPassAccDictSt;
-            foreach (var item in stataccs)
-            {
-                Console.WriteLine($"========= словарь {item.Key}");
-                foreach (var ac in item.Value)
-                {
-                    Console.WriteLine($"{ac.AccNumber} {ac.Balance} {ac.CurrencyType.Sign}");
-                }
-            }
             var ret = bankServ.PutMoneyAndChange(425, accs[0], "I-ПР012341");
-            Console.WriteLine(ret.Balance);
-            Console.WriteLine(bankServ.GetAccountsFromPair(bankServ.FindFromFileDict("I-ПР012341"))[1].Balance );
+            /* Console.WriteLine(ret.Balance);
+             Console.WriteLine(bankServ.GetAccountsFromPair(bankServ.FindFromFileDict("I-ПР012341"))[1].Balance );*/
         }
     }
 }
